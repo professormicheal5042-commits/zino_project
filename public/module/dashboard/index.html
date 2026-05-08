@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ZINO — Secure Dashboard</title>
+  <meta name="description" content="ZINO secure cloud dashboard. Upload, encrypt and manage your files with military-grade AES-RSA encryption."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="dashboard.css"/>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="logo-text">Z<span>I</span>NO</div>
+    <div class="logo-sub">Cloud Platform</div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-avatar" id="sbAvatar">U</div>
+    <div>
+      <div class="sb-name" id="sbName">User</div>
+      <div class="sb-email" id="sbEmail">—</div>
+    </div>
+  </div>
+
+  <div class="sb-nav">
+    <a href="index.html" class="active" id="navDash">
+      <span class="nav-icon">🏠</span> Dashboard
+    </a>
+    <a href="#uploadSection" id="navUpload">
+      <span class="nav-icon">☁️</span> Upload Files
+    </a>
+    <a href="#fileSection" id="navFiles">
+      <span class="nav-icon">📁</span> My Files
+    </a>
+    <a href="#" id="navSecurity">
+      <span class="nav-icon">🛡️</span> Security
+    </a>
+    <a href="#" id="navSettings">
+      <span class="nav-icon">⚙️</span> Settings
+    </a>
+  </div>
+
+  <div class="sb-bottom">
+    <a href="/module/auth/login.html" id="logoutBtn">
+      <span>🚪</span> Sign Out
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN CONTENT ══════════════════════════════════════ -->
+<main id="main">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <button id="menuToggle" style="display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;margin-bottom:12px;">☰</button>
+    <h1>Welcome back, <span id="greetName" style="color:#00D4FF;">User</span> 👋</h1>
+    <p>Your files are encrypted and secured with AES-256 + RSA-4096.</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📂</div>
+      <div class="stat-value" id="statFiles">0</div>
+      <div class="stat-label">Total Files</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💾</div>
+      <div class="stat-value" id="statStorage">0 B</div>
+      <div class="stat-label">Storage Used</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🕐</div>
+      <div class="stat-value" style="font-size:16px;" id="statLast">—</div>
+      <div class="stat-label">Last Upload</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔐</div>
+      <div class="stat-value" style="font-size:18px;">AES‑RSA</div>
+      <div class="stat-label">Encryption</div>
+    </div>
+  </div>
+
+  <!-- Upload Section -->
+  <section class="card" id="uploadSection">
+    <div class="card-title"><span>☁️</span> Upload Encrypted File</div>
+    <div class="upload-zone" id="uploadZone">
+      <div class="uz-icon">⬆️</div>
+      <h3>Drag &amp; drop or click to select</h3>
+      <p>Files are encrypted client-side before upload</p>
+      <div class="type-badges">
+        <span class="badge">📝 Text</span>
+        <span class="badge">🖼️ Image</span>
+        <span class="badge">🎵 Audio</span>
+        <span class="badge">🎬 Video</span>
+        <span class="badge">📄 PDF</span>
+      </div>
+      <input type="file" id="fileInput" multiple accept="*/*"/>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </section>
+
+  <!-- File List Section -->
+  <section class="card" id="fileSection">
+    <div class="card-title"><span>📁</span> My Encrypted Files</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Size</th>
+            <th>Uploaded</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="fileBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📭</div>
+      <p>No files yet. Upload your first file above!</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ DECRYPT MODAL ═════════════════════════════════════ -->
+<div class="modal-overlay" id="decryptModal">
+  <div class="modal-box">
+    <button class="modal-close" id="closeDecryptModal">&times;</button>
+    <h2>🔓 Decrypt File</h2>
+    <p>Paste your RSA private key to decrypt <strong id="decryptFileName" style="color:#00D4FF;"></strong>.</p>
+    <label class="input-label" for="privateKeyInput">YOUR PRIVATE KEY (.PEM)</label>
+    <textarea class="key-input" id="privateKeyInput" placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;...&#10;-----END RSA PRIVATE KEY-----"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="decryptBtn">🔓 Decrypt &amp; Download</button>
+      <button class="btn btn-ghost" id="closeDecryptModal2" onclick="document.getElementById('decryptModal').classList.remove('active')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ═══════════════════════════════════ -->
+<div id="toast"></div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

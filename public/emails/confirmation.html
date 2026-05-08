@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Confirm Your ZINO Account</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+    body { margin: 0; padding: 0; background-color: #000814; font-family: 'Inter', Arial, sans-serif; }
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { width: 100% !important; }
+      .btn-confirm { width: 100% !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#000814;">
+
+  <!-- OUTER WRAPPER -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#000814;padding:40px 20px;">
+    <tr>
+      <td align="center">
+
+        <!-- EMAIL CARD -->
+        <table role="presentation" class="email-wrapper" cellspacing="0" cellpadding="0" border="0" width="580"
+          style="background-color:#020818;border:1px solid rgba(0,71,255,0.3);border-radius:24px;overflow:hidden;box-shadow:0 0 60px rgba(0,71,255,0.12);">
+
+          <!-- TOP ACCENT BAR -->
+          <tr>
+            <td style="height:3px;background:linear-gradient(90deg,#0047FF,#00D4FF,#0047FF);line-height:3px;font-size:0;">&nbsp;</td>
+          </tr>
+
+          <!-- HEADER / LOGO -->
+          <tr>
+            <td align="center" style="padding:40px 48px 28px;">
+              <div style="font-family:'Inter',Arial,sans-serif;font-size:32px;font-weight:900;letter-spacing:-2px;color:#ffffff;line-height:1;">
+                Z<span style="color:#00D4FF;">I</span>NO
+              </div>
+              <div style="font-family:'Inter',Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:3px;color:#00D4FF;text-transform:uppercase;margin-top:4px;">
+                Cloud Platform
+              </div>
+            </td>
+          </tr>
+
+          <!-- WELCOME ICON -->
+          <tr>
+            <td align="center" style="padding:0 48px 24px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center"
+                    style="width:72px;height:72px;background:linear-gradient(135deg,rgba(0,71,255,0.25),rgba(0,212,255,0.1));border:1px solid rgba(0,71,255,0.4);border-radius:20px;font-size:32px;line-height:72px;text-align:center;">
+                    🚀
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- HEADING -->
+          <tr>
+            <td align="center" style="padding:0 48px 12px;">
+              <h1 style="font-family:'Inter',Arial,sans-serif;font-size:26px;font-weight:800;color:#ffffff;margin:0;letter-spacing:-0.5px;">
+                Confirm Your Email
+              </h1>
+            </td>
+          </tr>
+
+          <!-- SUBTITLE -->
+          <tr>
+            <td align="center" style="padding:0 48px 32px;">
+              <p style="font-family:'Inter',Arial,sans-serif;font-size:15px;color:#94A3B8;margin:0;line-height:1.6;text-align:center;">
+                Welcome to ZINO! Click the button below to confirm your account and start your secure cloud journey.
+              </p>
+            </td>
+          </tr>
+
+          <!-- CONFIRM BUTTON -->
+          <tr>
+            <td align="center" style="padding:0 48px 36px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center"
+                    style="background:linear-gradient(135deg,#0047FF,#0066ff);border-radius:50px;box-shadow:0 0 30px rgba(0,71,255,0.5);">
+                    <a href="{{ .ConfirmationURL }}" class="btn-confirm"
+                      style="display:inline-block;padding:16px 48px;font-family:'Inter',Arial,sans-serif;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.3px;border-radius:50px;">
+                      Confirm Account →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FALLBACK LINK -->
+          <tr>
+            <td align="center" style="padding:0 48px 32px;">
+              <p style="font-family:'Inter',Arial,sans-serif;font-size:12px;color:#475569;margin:0;line-height:1.8;">
+                Or copy and paste this URL into your browser:
+              </p>
+              <p style="font-family:'Inter',Arial,sans-serif;font-size:12px;margin:4px 0 0 0;">
+                <a href="{{ .ConfirmationURL }}" style="color:#0047FF;text-decoration:underline;word-break:break-all;">
+                  {{ .ConfirmationURL }}
+                </a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- DIVIDER -->
+          <tr>
+            <td style="padding:0 48px;">
+              <div style="height:1px;background:rgba(0,71,255,0.15);line-height:1px;font-size:0;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td align="center" style="padding:28px 48px 36px;">
+              <p style="font-family:'Inter',Arial,sans-serif;font-size:12px;color:#475569;margin:0;line-height:1.8;">
+                ZINO Cloud Platform &nbsp;•&nbsp; Military-Grade AES-256 Encryption<br/>
+                <a href="#" style="color:#0047FF;text-decoration:none;">Privacy Policy</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- BOTTOM ACCENT BAR -->
+          <tr>
+            <td style="height:3px;background:linear-gradient(90deg,#0047FF,#00D4FF,#0047FF);line-height:3px;font-size:0;">&nbsp;</td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

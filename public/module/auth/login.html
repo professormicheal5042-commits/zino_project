@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZINO — Sign In</title>
+  <meta name="description"
+    content="Sign in to your ZINO Cloud account — access your enterprise cloud infrastructure dashboard." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #000814;
+      --blue: #0047FF;
+      --blue-light: #3a7bff;
+      --cyan: #00D4FF;
+      --white: #ffffff;
+      --grey: #94A3B8;
+      --glass: rgba(0, 71, 255, 0.07);
+      --glass-border: rgba(0, 71, 255, 0.2);
+      --input-bg: rgba(255, 255, 255, 0.04);
+      --input-border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ANIMATED BG */
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* SPLIT LAYOUT */
+    .layout {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* LEFT: VISUAL */
+    .visual-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glow blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: blobFloat 10s ease-in-out infinite;
+    }
+
+    .blob1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 71, 255, 0.25), transparent 70%);
+      top: -150px;
+      left: -150px;
+      animation-delay: 0s;
+    }
+
+    .blob2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.12), transparent 70%);
+      bottom: -100px;
+      right: -80px;
+      animation-delay: -5s;
+    }
+
+    .blob3 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(112, 0, 255, 0.12), transparent 70%);
+      top: 40%;
+      left: 30%;
+      animation-delay: -3s;
+    }
+
+    @keyframes blobFloat {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(20px, -20px) scale(1.05);
+      }
+
+      66% {
+        transform: translate(-15px, 15px) scale(0.97);
+      }
+    }
+
+    .visual-content {
+      text-align: center;
+      max-width: 460px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .vis-logo {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      background: linear-gradient(135deg, #fff 20%, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+      animation: logoPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .vis-tagline {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--cyan);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    @keyframes logoPop {
+      from {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* FLOATING CARD */
+    .float-card {
+      background: rgba(0, 18, 51, 0.5);
+      border: 1px solid rgba(0, 71, 255, 0.25);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(32px);
+      margin-bottom: 2rem;
+      text-align: left;
+      animation: cardFloat 6s ease-in-out infinite;
+      box-shadow: 0 24px 60px rgba(0, 71, 255, 0.15);
+    }
+
+    @keyframes cardFloat {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .card-sub {
+      font-size: 0.75rem;
+      color: var(--grey);
+    }
+
+    .card-stats {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .card-stat-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-stat-lbl {
+      font-size: 0.7rem;
+      color: var(--grey);
+      margin-top: 0.1rem;
+    }
+
+    .progress-row {
+      margin-top: 1.2rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--grey);
+    }
+
+    .progress-track {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 4px;
+      height: 5px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      from {
+        transform: translateX(-100%);
+      }
+
+      to {
+        transform: translateX(100%);
+      }
+    }
+
+    .trust-badges {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(0, 71, 255, 0.1);
+      border: 1px solid rgba(0, 71, 255, 0.25);
+      border-radius: 50px;
+      padding: 0.45rem 1.1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--cyan);
+    }
+
+    /* RIGHT: FORM */
+    .form-panel {
+      width: 500px;
+      min-height: 100vh;
+      background: rgba(2, 8, 18, 0.97);
+      border-left: 1px solid rgba(0, 71, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 3rem;
+      overflow-y: auto;
+    }
+
+    .form-wrap {
+      width: 100%;
+      max-width: 400px;
+      animation: slideIn 0.7s ease both;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .form-top {
+      margin-bottom: 2.5rem;
+    }
+
+    .form-top h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .form-top p {
+      color: var(--grey);
+      font-size: 0.88rem;
+      margin-top: 0.4rem;
+    }
+
+    .form-top p a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .form-top p a:hover {
+      opacity: 0.8;
+    }
+
+    /* GOOGLE BTN */
+    .btn-google {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: all 0.3s;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+    }
+
+    .btn-google:hover {
+      border-color: rgba(0, 71, 255, 0.45);
+      background: rgba(0, 71, 255, 0.07);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 71, 255, 0.15);
+    }
+
+    /* DIVIDER */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .divider span {
+      font-size: 0.75rem;
+      color: var(--grey);
+      white-space: nowrap;
+    }
+
+    /* FORM FIELDS */
+    .field {
+      margin-bottom: 1.1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 0.45rem;
+    }
+
+    .field-wrap {
+      position: relative;
+    }
+
+    .field input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 12px;
+      padding: 0.9rem 3rem 0.9rem 1rem;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .field input::placeholder {
+      color: rgba(148, 163, 184, 0.45);
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      background: rgba(0, 71, 255, 0.07);
+      box-shadow: 0 0 0 3px rgba(0, 71, 255, 0.15), 0 0 20px rgba(0, 71, 255, 0.1);
+    }
+
+    .field-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--grey);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--grey);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+
+    .toggle-pw:hover {
+      color: var(--white);
+    }
+
+    /* FORGOT */
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin: -0.4rem 0 1.2rem;
+    }
+
+    .forgot-row a {
+      font-size: 0.8rem;
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .forgot-row a:hover {
+      opacity: 0.7;
+    }
+
+    /* REMEMBER */
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .remember input {
+      accent-color: var(--blue);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .remember label {
+      font-size: 0.82rem;
+      color: var(--grey);
+      cursor: pointer;
+    }
+
+    /* SUBMIT */
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), #0066ff);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      box-shadow: 0 0 30px rgba(0, 71, 255, 0.45);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit .ripple-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(0, 71, 255, 0.7);
+    }
+
+    .btn-submit:hover .ripple-bg {
+      opacity: 1;
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    /* STATUS */
+    .status-msg {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: none;
+    }
+
+    .status-msg.error {
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      color: #FF6B6B;
+      display: block;
+    }
+
+    .status-msg.success {
+      background: rgba(0, 71, 255, 0.1);
+      border: 1px solid rgba(0, 71, 255, 0.3);
+      color: var(--cyan);
+      display: block;
+    }
+
+    .secure-note {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--grey);
+    }
+
+    @media(max-width:900px) {
+      body {
+        overflow-y: auto;
+      }
+
+      .layout {
+        flex-direction: column;
+      }
+
+      .visual-panel {
+        padding: 2.5rem 2rem;
+        min-height: auto;
+      }
+
+      .float-card {
+        display: none;
+      }
+
+      .form-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid rgba(0, 71, 255, 0.12);
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="layout">
+    <!-- VISUAL LEFT PANEL -->
+    <div class="visual-panel">
+      <div class="blob blob1"></div>
+      <div class="blob blob2"></div>
+      <div class="blob blob3"></div>
+
+      <div class="visual-content">
+        <div class="vis-logo">ZINO</div>
+        <p class="vis-tagline">Cloud Platform</p>
+
+        <!-- Floating UI card -->
+        <div class="float-card">
+          <div class="card-header">
+            <div class="card-icon">☁️</div>
+            <div>
+              <div class="card-title">Enterprise Dashboard</div>
+              <div class="card-sub">Real-time infrastructure overview</div>
+            </div>
+          </div>
+          <div class="card-stats">
+            <div>
+              <div class="card-stat-val" id="storageVal">0</div>
+              <div class="card-stat-lbl">TB Stored</div>
+            </div>
+            <div>
+              <div class="card-stat-val" id="uptimeVal">0</div>
+              <div class="card-stat-lbl">% Uptime</div>
+            </div>
+            <div>
+              <div class="card-stat-val" id="nodesVal">0</div>
+              <div class="card-stat-lbl">Active Nodes</div>
+            </div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Storage Capacity</span><span>74%</span></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:74%"></div>
+            </div>
+          </div>
+          <div class="progress-row" style="margin-top:0.8rem;">
+            <div class="progress-label"><span>Network Throughput</span><span>92%</span></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:92%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM RIGHT PANEL -->
+    <div class="form-panel">
+      <div class="form-wrap">
+        <div class="form-top">
+          <h1>Welcome back</h1>
+          <p>Don't have an account? <a href="register.html">Sign up free</a></p>
+        </div>
+
+        <!-- GOOGLE -->
+        <button class="btn-google" id="googleBtn" onclick="handleGoogle(event)">
+          <svg width="20" height="20" viewBox="0 0 18 18">
+            <path fill="#4285F4"
+              d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" />
+            <path fill="#34A853"
+              d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" />
+            <path fill="#FBBC05"
+              d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" />
+            <path fill="#EA4335"
+              d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" />
+          </svg>
+          Continue with Google
+        </button>
+
+        <div class="divider"><span>or sign in with email</span></div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+          <div class="field">
+            <label for="loginEmail">Email Address</label>
+            <div class="field-wrap">
+              <input type="email" id="loginEmail" placeholder="you@company.com" required autocomplete="email" />
+              <span class="field-icon">✉</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="loginPw">Password</label>
+            <div class="field-wrap">
+              <input type="password" id="loginPw" placeholder="Enter your password" required
+                autocomplete="current-password" />
+              <button type="button" class="toggle-pw" onclick="togglePw()" id="toggleBtn">👁</button>
+            </div>
+          </div>
+
+          <div class="forgot-row">
+            <a href="#" onclick="forgotPw(event)">Forgot password?</a>
+          </div>
+
+          <div class="remember">
+            <input type="checkbox" id="remember" />
+            <label for="remember">Keep me signed in for 30 days</label>
+          </div>
+
+          <button type="submit" class="btn-submit" id="loginBtn">
+            <span class="ripple-bg"></span>
+            Sign In →
+          </button>
+
+          <div class="status-msg" id="statusMsg"></div>
+        </form>
+
+        <div class="secure-note">
+          <span>🔐</span>
+          <span>Protected by ZINO's military-grade AES-256 encryption</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // BACKGROUND CANVAS — deep space particles
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = { x: null, y: null };
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+
+    const pts = Array.from({ length: 90 }, () => ({
+      x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 1.8 + 0.4,
+      c: Math.random() > 0.5 ? '0,71,255' : '0,212,255',
+      a: Math.random() * 0.5 + 0.1
+    }));
+
+    function animBg() {
+      ctx.clearRect(0, 0, W, H);
+      // faint gradient overlay
+      const grad = ctx.createRadialGradient(W * 0.3, H * 0.3, 0, W * 0.3, H * 0.3, W * 0.6);
+      grad.addColorStop(0, 'rgba(0,71,255,0.04)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.c},${p.a})`; ctx.fill();
+      });
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 110) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(0,71,255,${0.12 * (1 - d / 110)})`; ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      }
+      requestAnimationFrame(animBg);
+    }
+    animBg();
+
+    // COUNTER ANIMATION
+    function countUp(el, target, suffix = '', duration = 1500) {
+      let start = 0; const step = target / 60;
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= target) { el.textContent = target + suffix; clearInterval(timer); return; }
+        el.textContent = Math.floor(start) + suffix;
+      }, duration / 60);
+    }
+    setTimeout(() => {
+      countUp(document.getElementById('storageVal'), 847, '');
+      countUp(document.getElementById('uptimeVal'), 99, '');
+      countUp(document.getElementById('nodesVal'), 512, '');
+    }, 800);
+
+    // PASSWORD TOGGLE
+    function togglePw() {
+      const inp = document.getElementById('loginPw');
+      const btn = document.getElementById('toggleBtn');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+    }
+
+    // GOOGLE LOGIN
+    function handleGoogle(e) {
+      e.preventDefault();
+      const btn = document.getElementById('googleBtn');
+      btn.textContent = 'Connecting...'; btn.disabled = true; btn.style.opacity = '0.7';
+      setTimeout(() => {
+        btn.textContent = 'Continue with Google'; btn.disabled = false; btn.style.opacity = '1';
+        showStatus('Google Sign-In is ready to be connected to Firebase Auth.', 'success');
+      }, 1400);
+    }
+
+    // FORGOT PASSWORD
+    function forgotPw(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      if (!email) { showStatus('Please enter your email address first.', 'error'); return; }
+      showStatus(`Password reset link sent to ${email} — check your inbox!`, 'success');
+    }
+
+    // LOGIN FORM
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const pw = document.getElementById('loginPw').value;
+      if (!email || !pw) { showStatus('Please fill in all fields.', 'error'); return; }
+      const btn = document.getElementById('loginBtn');
+      btn.innerHTML = '<span class="ripple-bg"></span>Sending OTP...';
+      btn.disabled = true; btn.style.opacity = '0.8';
+      // Store email for OTP page to display masked version
+      sessionStorage.setItem('zinoEmail', email);
+      sessionStorage.setItem('zinoFlow', 'login');
+      setTimeout(() => { window.location.href = 'otp.html'; }, 1400); // otp.html in same folder
+    }
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('statusMsg');
+      el.textContent = msg; el.className = 'status-msg ' + type;
+    }
+  </script>
+</body>
+
+</html>

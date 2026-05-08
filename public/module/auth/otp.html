@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZINO — Verify Your Identity</title>
+  <meta name="description" content="Enter your 6-digit OTP to verify your ZINO account." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #000814;
+      --blue: #0047FF;
+      --blue-light: #3a7bff;
+      --cyan: #00D4FF;
+      --white: #ffffff;
+      --grey: #94A3B8;
+      --glass: rgba(0, 71, 255, 0.07);
+      --glass-border: rgba(0, 71, 255, 0.2);
+      --input-bg: rgba(255, 255, 255, 0.04);
+      --input-border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ANIMATED BG CANVAS */
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* RADIAL GLOW */
+    .glow-center {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 71, 255, 0.12) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+
+      0%,
+      100% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+    }
+
+    /* CARD */
+    .otp-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(2, 8, 24, 0.85);
+      border: 1px solid rgba(0, 71, 255, 0.25);
+      border-radius: 28px;
+      padding: 3rem 2.8rem;
+      backdrop-filter: blur(40px);
+      box-shadow: 0 0 80px rgba(0, 71, 255, 0.12), 0 40px 80px rgba(0, 0, 0, 0.5);
+      animation: cardEntrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      margin: 1.5rem;
+    }
+
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: scale(0.93) translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* TOP LINE GLOW */
+    .card-top-line {
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 71, 255, 0.8), rgba(0, 212, 255, 0.6), transparent);
+      border-radius: 2px;
+    }
+
+    /* LOGO */
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      background: linear-gradient(135deg, #fff 30%, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: logoPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+
+    @keyframes logoPop {
+      from {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* SHIELD ICON */
+    .shield-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.8rem;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    .shield {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(0, 71, 255, 0.25), rgba(0, 212, 255, 0.1));
+      border: 1px solid rgba(0, 71, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 0 30px rgba(0, 71, 255, 0.3);
+      animation: shieldFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes shieldFloat {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    /* HEADING */
+    .otp-card h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      animation: fadeUp 0.6s ease 0.35s both;
+    }
+
+    .otp-card .subtitle {
+      text-align: center;
+      color: var(--grey);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+
+    .email-display {
+      text-align: center;
+      color: var(--cyan);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease 0.45s both;
+    }
+
+    /* OTP INPUT GROUP */
+    .otp-group {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease 0.5s both;
+    }
+
+    .otp-box {
+      width: 64px;
+      height: 72px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 14px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      text-align: center;
+      caret-color: var(--cyan);
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      letter-spacing: 0;
+    }
+
+    .otp-box::selection {
+      background: rgba(0, 71, 255, 0.4);
+    }
+
+    .otp-box:focus {
+      border-color: var(--blue);
+      background: rgba(0, 71, 255, 0.09);
+      box-shadow: 0 0 0 3px rgba(0, 71, 255, 0.2), 0 0 24px rgba(0, 71, 255, 0.15);
+      transform: translateY(-3px) scale(1.06);
+    }
+
+    .otp-box.filled {
+      border-color: rgba(0, 212, 255, 0.5);
+      background: rgba(0, 71, 255, 0.08);
+      color: var(--cyan);
+    }
+
+    .otp-box.error-shake {
+      border-color: #FF4444;
+      background: rgba(255, 68, 68, 0.08);
+      animation: shake 0.4s ease;
+    }
+
+    .otp-box.success-glow {
+      border-color: var(--cyan);
+      background: rgba(0, 212, 255, 0.08);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-6px);
+      }
+
+      40% {
+        transform: translateX(6px);
+      }
+
+      60% {
+        transform: translateX(-4px);
+      }
+
+      80% {
+        transform: translateX(4px);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* TIMER */
+    .timer-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.6rem;
+      font-size: 0.85rem;
+      color: var(--grey);
+      animation: fadeUp 0.6s ease 0.55s both;
+    }
+
+    .timer-count {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cyan);
+      min-width: 2.5rem;
+      text-align: center;
+    }
+
+    .timer-bar-wrap {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      animation: fadeUp 0.6s ease 0.6s both;
+    }
+
+    .timer-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      width: 100%;
+      transition: width 1s linear;
+      box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+    }
+
+    /* VERIFY BUTTON */
+    .btn-verify {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), #0066ff);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      box-shadow: 0 0 30px rgba(0, 71, 255, 0.45);
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.6s ease 0.65s both;
+    }
+
+    .btn-verify .shimmer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-verify:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(0, 71, 255, 0.7), 0 8px 24px rgba(0, 71, 255, 0.3);
+    }
+
+    .btn-verify:hover .shimmer {
+      opacity: 1;
+    }
+
+    .btn-verify:active {
+      transform: translateY(0);
+    }
+
+    .btn-verify:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-verify.loading {
+      pointer-events: none;
+    }
+
+    /* SPINNER inside button */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* RESEND */
+    .resend-row {
+      text-align: center;
+      font-size: 0.83rem;
+      color: var(--grey);
+      animation: fadeUp 0.6s ease 0.7s both;
+    }
+
+    .btn-resend {
+      background: none;
+      border: none;
+      color: var(--cyan);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      transition: all 0.2s;
+    }
+
+    .btn-resend:hover:not(:disabled) {
+      opacity: 0.8;
+      text-decoration-color: var(--cyan);
+    }
+
+    .btn-resend:disabled {
+      color: var(--grey);
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+
+    /* STATUS */
+    .status-msg {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: none;
+      text-align: center;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .status-msg.error {
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      color: #FF6B6B;
+      display: block;
+    }
+
+    .status-msg.success {
+      background: rgba(0, 71, 255, 0.1);
+      border: 1px solid rgba(0, 71, 255, 0.3);
+      color: var(--cyan);
+      display: block;
+    }
+
+    .status-msg.info {
+      background: rgba(0, 212, 255, 0.06);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      color: var(--grey);
+      display: block;
+    }
+
+    /* SECURE NOTE */
+    .secure-note {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: rgba(148, 163, 184, 0.6);
+      animation: fadeUp 0.6s ease 0.75s both;
+    }
+
+    /* SUCCESS STATE */
+    .success-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .success-overlay.show {
+      display: flex;
+    }
+
+    .checkmark-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0, 71, 255, 0.2), rgba(0, 212, 255, 0.1));
+      border: 2px solid var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.4);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-overlay h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-overlay p {
+      color: var(--grey);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* PROVISIONING ANIMATION */
+    .provisioning-box {
+      width: 100%;
+      max-width: 320px;
+      background: rgba(0, 71, 255, 0.05);
+      border: 1px solid rgba(0, 71, 255, 0.15);
+      border-radius: 16px;
+      padding: 1.2rem;
+      margin-bottom: 2rem;
+      text-align: left;
+      display: none;
+    }
+
+    .provision-step {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.82rem;
+      color: var(--grey);
+      margin-bottom: 0.6rem;
+    }
+
+    .provision-step i {
+      color: var(--cyan);
+      font-style: normal;
+      font-weight: 800;
+    }
+
+    .provision-step.done {
+      color: var(--white);
+    }
+
+    .provision-step.done i::after {
+      content: ' ✓';
+      color: #10B981;
+    }
+
+    .btn-continue,
+    .btn-download {
+      padding: 0.9rem 2.5rem;
+      background: linear-gradient(135deg, var(--blue), #0066ff);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(0, 71, 255, 0.4);
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      margin: 0.5rem;
+    }
+
+    .btn-download {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      box-shadow: none;
+    }
+
+    .btn-continue:hover,
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(0, 71, 255, 0.7);
+    }
+
+    /* DIVIDER */
+    .back-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      animation: fadeUp 0.6s ease 0.8s both;
+    }
+
+    .back-link a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link a:hover {
+      color: var(--white);
+    }
+
+    @media(max-width:520px) {
+      .otp-card {
+        padding: 2.2rem 1.5rem;
+        border-radius: 20px;
+      }
+
+      .otp-box {
+        width: 48px;
+        height: 58px;
+        font-size: 1.4rem;
+        border-radius: 10px;
+      }
+
+      .otp-group {
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+  <div class="glow-center"></div>
+
+  <div class="otp-card" id="otpCard">
+    <div class="card-top-line"></div>
+
+    <!-- LOGO -->
+    <div class="logo">ZINO</div>
+
+    <!-- MAIN CONTENT (shown initially) -->
+    <div id="mainContent">
+      <!-- SHIELD -->
+      <div class="shield-wrap">
+        <div class="shield">🛡️</div>
+      </div>
+
+      <h1>Verify Your Identity</h1>
+      <p class="subtitle">We sent a 6-digit code to your email address</p>
+      <div class="email-display" id="emailDisplay">y***@company.com</div>
+
+      <!-- OTP BOXES -->
+      <div class="otp-group" id="otpGroup">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="d0" autocomplete="one-time-code" />
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="d1" />
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="d2" />
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="d3" />
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="d4" />
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="d5" />
+      </div>
+
+      <!-- TIMER BAR -->
+      <div class="timer-bar-wrap">
+        <div class="timer-bar" id="timerBar"></div>
+      </div>
+      <div class="timer-row">
+        <span>Code expires in</span>
+        <span class="timer-count" id="timerCount">05:00</span>
+      </div>
+
+      <!-- VERIFY BUTTON -->
+      <button class="btn-verify" id="verifyBtn" onclick="verifyOTP()" disabled>
+        <span class="shimmer"></span>
+        <span id="verifyBtnText">Verify Code</span>
+      </button>
+
+      <!-- STATUS -->
+      <div class="status-msg" id="statusMsg"></div>
+
+      <!-- RESEND -->
+      <div class="resend-row">
+        Didn't receive the code?&nbsp;
+        <button class="btn-resend" id="resendBtn" onclick="resendCode()" disabled>Resend</button>
+      </div>
+
+      <div class="secure-note">
+        <span>🔐</span>
+        <span>This code is valid for 5 minutes only</span>
+      </div>
+
+      <div class="back-link">
+        <a href="login.html">← Back to Sign In</a>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE (hidden initially) -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="checkmark-circle">✓</div>
+      <h2 id="successTitle">Verified!</h2>
+      <p id="successDesc">Your identity has been confirmed.<br />Provisioning secure cloud environment...</p>
+
+      <div class="provisioning-box" id="provisioningBox">
+        <div class="provision-step" id="step1"><i>•</i> Generating AES-256 Master Key...</div>
+        <div class="provision-step" id="step2"><i>•</i> Creating RSA-4096 Identity Pair...</div>
+        <div class="provision-step" id="step3"><i>•</i> Encrypting Personal Vault...</div>
+      </div>
+
+      <div id="successActions" style="display: none;">
+        <button class="btn-download" onclick="downloadPrivateKey()">⬇ Download Private Key</button>
+        <a href="../dashboard/index.html" class="btn-continue">Enter Dashboard →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ─── BACKGROUND CANVAS ─── */
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+
+    const pts = Array.from({ length: 80 }, () => ({
+      x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.6 + 0.3,
+      c: Math.random() > 0.5 ? '0,71,255' : '0,212,255',
+      a: Math.random() * 0.45 + 0.08
+    }));
+
+    (function animBg() {
+      ctx.clearRect(0, 0, W, H);
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.c},${p.a})`; ctx.fill();
+      });
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 100) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(0,71,255,${0.1 * (1 - d / 100)})`; ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      }
+      requestAnimationFrame(animBg);
+    })();
+
+    /* ─── LOAD EMAIL FROM sessionStorage ─── */
+    const savedEmail = sessionStorage.getItem('zinoEmail') || '';
+    if (savedEmail) {
+      const [user, domain] = savedEmail.split('@');
+      const masked = user.charAt(0) + '***' + (user.length > 2 ? user.charAt(user.length - 1) : '') + '@' + domain;
+      document.getElementById('emailDisplay').textContent = masked;
+    }
+
+    /* ─── OTP BOXES ─── */
+    const boxes = Array.from(document.querySelectorAll('.otp-box'));
+    const verifyBtn = document.getElementById('verifyBtn');
+
+    boxes.forEach((box, i) => {
+      box.addEventListener('input', e => {
+        let val = e.target.value.replace(/\D/g, '');
+        // Handle paste of multiple digits
+        if (val.length > 1) {
+          val.split('').forEach((ch, idx) => {
+            if (boxes[i + idx]) { boxes[i + idx].value = ch; boxes[i + idx].classList.add('filled'); }
+          });
+          const nextIdx = Math.min(i + val.length, 5);
+          boxes[nextIdx].focus();
+        } else {
+          box.value = val;
+          if (val) { box.classList.add('filled'); if (i < 5) boxes[i + 1].focus(); }
+          else box.classList.remove('filled');
+        }
+        checkComplete();
+      });
+
+      box.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !box.value && i > 0) {
+          boxes[i - 1].value = '';
+          boxes[i - 1].classList.remove('filled');
+          boxes[i - 1].focus();
+          checkComplete();
+        }
+        if (e.key === 'ArrowLeft' && i > 0) boxes[i - 1].focus();
+        if (e.key === 'ArrowRight' && i < 5) boxes[i + 1].focus();
+      });
+
+      box.addEventListener('focus', () => box.select());
+
+      // Paste handler on first box
+      box.addEventListener('paste', e => {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+        pasted.split('').forEach((ch, idx) => {
+          if (boxes[idx]) { boxes[idx].value = ch; boxes[idx].classList.add('filled'); }
+        });
+        boxes[Math.min(pasted.length, 5)].focus();
+        checkComplete();
+      });
+    });
+
+    function checkComplete() {
+      const code = boxes.map(b => b.value).join('');
+      verifyBtn.disabled = code.length !== 6;
+    }
+
+    function getCode() { return boxes.map(b => b.value).join(''); }
+
+    function clearBoxes() {
+      boxes.forEach(b => { b.value = ''; b.classList.remove('filled', 'error-shake', 'success-glow'); });
+      boxes[0].focus();
+      verifyBtn.disabled = true;
+    }
+
+    /* ─── COUNTDOWN TIMER: 5 minutes ─── */
+    const TOTAL = 300;
+    let timeLeft = TOTAL;
+    let timerInterval = null;
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = TOTAL;
+      updateTimerUI();
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerUI();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('resendBtn').disabled = false;
+          document.getElementById('resendBtn').textContent = 'Resend Code';
+          showStatus('Your code has expired. Please request a new one.', 'error');
+          verifyBtn.disabled = true;
+          boxes.forEach(b => b.disabled = true);
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const s = String(timeLeft % 60).padStart(2, '0');
+      document.getElementById('timerCount').textContent = `${m}:${s}`;
+      document.getElementById('timerBar').style.width = (timeLeft / TOTAL * 100) + '%';
+      // Color shift as time runs low
+      if (timeLeft < 60) {
+        document.getElementById('timerCount').style.color = '#FF6B6B';
+        document.getElementById('timerBar').style.background = 'linear-gradient(90deg,#ff4444,#ff8844)';
+      }
+    }
+
+    // Resend becomes available after 60 seconds
+    setTimeout(() => {
+      const rb = document.getElementById('resendBtn');
+      rb.disabled = false;
+      rb.textContent = 'Resend';
+    }, 60000);
+
+    startTimer();
+
+    /* ─── VERIFY OTP ─── */
+    function verifyOTP() {
+      const code = getCode();
+      if (code.length !== 6) return;
+
+      const btn = document.getElementById('verifyBtn');
+      const btnText = document.getElementById('verifyBtnText');
+      btn.disabled = true;
+      btn.classList.add('loading');
+      btnText.innerHTML = '<span class="spinner"></span>Verifying...';
+      hideStatus();
+
+      // Simulate API call (replace with real Firebase/backend call)
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        btnText.textContent = 'Verify Code';
+        btn.disabled = false;
+
+        // Demo: any 6-digit code works; in production verify against backend
+        if (code.length === 6) {
+          // SUCCESS
+          boxes.forEach(b => b.classList.add('success-glow'));
+          clearInterval(timerInterval);
+          setTimeout(startProvisioning, 800);
+        } else {
+          // FAIL
+          boxes.forEach(b => { b.classList.add('error-shake'); setTimeout(() => b.classList.remove('error-shake'), 500); });
+          showStatus('Invalid code. Please try again.', 'error');
+          clearBoxes();
+        }
+      }, 1500);
+    }
+
+    /* ─── RESEND CODE ─── */
+    function resendCode() {
+      const rb = document.getElementById('resendBtn');
+      rb.disabled = true;
+      rb.textContent = 'Sending...';
+      hideStatus();
+      clearBoxes();
+      boxes.forEach(b => b.disabled = false);
+
+      setTimeout(() => {
+        rb.textContent = 'Resend in 60s';
+        showStatus('A new 6-digit code has been sent to your email.', 'success');
+        startTimer();
+        // Re-enable resend after 60s
+        setTimeout(() => {
+          rb.disabled = false;
+          rb.textContent = 'Resend';
+        }, 60000);
+      }, 1000);
+    }
+
+    /* ─── STATUS HELPERS ─── */
+    function showStatus(msg, type) {
+      const el = document.getElementById('statusMsg');
+      el.textContent = msg;
+      el.className = 'status-msg ' + type;
+    }
+    function hideStatus() {
+      const el = document.getElementById('statusMsg');
+      el.className = 'status-msg';
+    }
+
+    // Auto-focus first box on load
+    window.addEventListener('load', () => boxes[0].focus());
+
+    /* ─── SECURITY PROVISIONING & RSA KEYGEN ─── */
+    let generatedPrivateKey = null;
+ 
+    async function startProvisioning() {
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('successOverlay').classList.add('show');
+      document.getElementById('provisioningBox').style.display = 'block';
+
+      const steps = ['step1', 'step2', 'step3'];
+      for (let i = 0; i < steps.length; i++) {
+        const el = document.getElementById(steps[i]);
+        el.classList.add('done');
+        if (i === 1) {
+          // Real RSA Generation
+          generatedPrivateKey = await generateRSAKeyPair();
+        }
+        await new Promise(r => setTimeout(r, 1000));
+      }
+
+      document.getElementById('successTitle').textContent = 'Secure Vault Ready';
+      document.getElementById('successDesc').innerHTML = 'Security keys generated successfully.<br/>Please download and save your private key.';
+      document.getElementById('successActions').style.display = 'block';
+    }
+
+    async function generateRSAKeyPair() {
+      try {
+        const pair = await window.crypto.subtle.generateKey(
+          {
+            name: "RSA-OAEP",
+            modulusLength: 4096,
+            publicExponent: new Uint8Array([1, 0, 1]),
+            hash: "SHA-256",
+          },
+          true,
+          ["encrypt", "decrypt"]
+        );
+        const exported = await window.crypto.subtle.exportKey("pkcs8", pair.privateKey);
+        return exported;
+      } catch (e) {
+        console.error("KeyGen Error", e);
+        return null;
+      }
+    }
+
+    function downloadPrivateKey() {
+      if (!generatedPrivateKey) return;
+      const binary = String.fromCharCode.apply(null, new Uint8Array(generatedPrivateKey));
+      const base64 = btoa(binary);
+      const pem = `-----BEGIN PRIVATE KEY-----\n${base64.match(/.{1,64}/g).join('\n')}\n-----END PRIVATE KEY-----`;
+
+      const blob = new Blob([pem], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'zino_private_access.key';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+
+</html>

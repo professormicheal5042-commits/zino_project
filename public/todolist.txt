@@ -1,0 +1,79 @@
+3-DAY PROJECT PLAN: SECURE CLOUD STORAGE SYSTEM
+Goal: 100/100 Score on Final Year Project
+Time Commitment: 2 Hours Daily (6 Hours Total)
+Tech Stack: HTML/CSS/JS (UI), Supabase (Backend/Auth/DB/Storage), Firebase (Hosting)
+Branding: Deep Blue, Mobile-First, Responsive (Flexbox/Grid)
+
+DAY 1: Foundation, UI Shell, & Advanced Auth (2 Hours)
+[x] 0:00 - 0:30 | Infrastructure Setup
+    [x] Initialize Supabase project (Database tables: Users, Files).
+    [x] Configure Supabase Storage buckets with strict Row Level Security (RLS) policies.
+    [x] Initialize Firebase project for frontend website hosting.
+[x] 0:30 - 1:15 | Authentication UI Development
+    [x] Build Landing Page (index.html) -- glassmorphism design, animated particle canvas, hero section.
+    [x] Build Registration Page (module/auth/register.html) -- Name, Email, Username, Password fields.
+    [x] Build Login Page (module/auth/login.html) -- Email, Password, Google SSO button.
+    [x] Integrate "Deep Blue" branding across all pages (--blue: #0047FF, --cyan: #00D4FF).
+    [x] Modularized auth into public/module/auth/ directory (login, register, otp).
+    [x] Added backward-compatible redirect stubs at root-level (public/otp.html, register.html).
+[ ] 1:15 - 2:00 | Auth Logic & Advanced Key Management (BACKEND PENDING)
+    [ ] Connect real Supabase Authentication (email/password sign-up & sign-in).
+        NOTE: sessionStorage bridge (zinoEmail, zinoFlow) is in UI code but NOT backed by real auth yet.
+    [x] Integrate OTP email delivery via PINGRAM (send 6-digit code to user email on login/register).
+    [x] Added Confirmation (Magic Link) email template.
+    [x] Updated Reset Password email template to use ConfirmationURL.
+    [ ] Verify OTP on backend -- validate submitted code matches sent code, with expiry check.
+    [x] Implemented "Key Strength Meter" on the registration form (weak/fair/good/strong).
+    [x] Built full OTP Verification page (module/auth/otp.html) -- 6-digit boxes, countdown timer, resend logic.
+    [x] 100/100 Feature: Client-side RSA-4096 key generation via Web Crypto API on successful registration.
+    [x] Private Key downloads as a .pem file ("zino_private_access.key").
+    [x] Flow-aware OTP success: Login -> auto-redirect to dashboard; Register -> key download + dashboard entry.
+
+DAY 2: User Dashboard & Visual Security (2 Hours)
+[x] 0:00 - 0:15 | User Dashboard Shell (Partial)
+    [x] Built initial Dashboard shell (module/dashboard/index.html) -- sidebar nav, stats grid, file list.
+    [x] Dashboard reads sessionStorage to greet user by name from their login email.
+[x] 0:15 - 0:45 | User Dashboard Full Build
+    [x] Created File Upload Section (drag & drop, supports text, image, audio, video, PDF).
+    [x] Created File List table (name, size, date, status) with Decrypt, Verify & Delete buttons.
+    [x] Created Decryption Prompt Modal (RSA private key textarea, slide-up animation).
+    [x] Auth guard -- redirects unauthenticated users to login page.
+    [x] Sidebar with user avatar, email, active nav highlighting, sign-out link.
+    [x] Stats grid -- file count, storage used, last upload, encryption level.
+    [x] Toast notification system for all user actions.
+    [x] Drag & drop upload zone with animated progress bar.
+    [x] Split into index.html, dashboard.css, dashboard.js for clean architecture.
+[ ] 0:45 - 1:30 | The "Wow" Factor: Security Visualization
+    - Implement Client-Side Encryption (Hybrid AES-RSA logic before upload).
+    - 100/100 Feature: Implement UI animation "Encrypting [Filename] using Hybrid AES-RSA..." during upload.
+    - Upload encrypted blob to Supabase Storage; save file metadata to Supabase DB.
+[ ] 1:30 - 2:00 | Decryption & Download Flow
+    - Wire up the "Download" button to trigger the Decryption Modal.
+    - Implement logic to take user's Private Key input, fetch encrypted file, decrypt client-side, trigger download.
+
+DAY 3: Integrity, App Polish & Deployment (2 Hours)
+[ ] 0:00 - 0:45 | Real-Time Integrity Checks
+    - Implement SHA-256 hashing during the upload process and store the resulting hash.
+    - 100/100 Feature: Wire up the "Verify Integrity" button to prove no tampering occurred in the cloud.
+[ ] 0:45 - 1:30 | UI/UX Enhancement & Polish
+    - Comprehensive UI/UX testing across Desktop, Tablet, and Mobile views.
+    - Polish hover states, micro-animations, and overall aesthetic.
+    - Add user-friendly error handling and success toasts.
+[ ] 1:30 - 2:00 | Final Review & Deployment
+    - Deploy static files (HTML/CSS/JS) to Firebase Hosting.
+    - Perform full end-to-end test on the live production URL.
+
+==========================================================================
+SESSION NOTES — Last Updated: Day 1 COMPLETE
+==========================================================================
+Files Built & Status:
+  public/index.html                      [DONE] Landing page with animated canvas & hero
+  public/module/auth/login.html          [DONE] Login form -> navigates to OTP on submit
+  public/module/auth/register.html       [DONE] Register form -> navigates to OTP on submit
+  public/module/auth/otp.html            [DONE] OTP verify, timer, RSA keygen, provisioning
+  public/module/dashboard/index.html     [DONE] Dashboard shell (stats, sidebar, file list)
+  public/otp.html                        [DONE] Redirect stub -> module/auth/otp.html
+  public/register.html                   [DONE] Redirect stub -> module/auth/register.html
+
+Next Step: Build Supabase file upload + AES-RSA encryption flow (Day 2 remaining tasks).
+==========================================================================
