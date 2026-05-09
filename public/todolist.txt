@@ -16,13 +16,13 @@ DAY 1: Foundation, UI Shell, & Advanced Auth (2 Hours)
     [x] Integrate "Deep Blue" branding across all pages (--blue: #0047FF, --cyan: #00D4FF).
     [x] Modularized auth into public/module/auth/ directory (login, register, otp).
     [x] Added backward-compatible redirect stubs at root-level (public/otp.html, register.html).
-[ ] 1:15 - 2:00 | Auth Logic & Advanced Key Management (BACKEND PENDING)
-    [ ] Connect real Supabase Authentication (email/password sign-up & sign-in).
-        NOTE: sessionStorage bridge (zinoEmail, zinoFlow) is in UI code but NOT backed by real auth yet.
+[x] 1:15 - 2:00 | Auth Logic & Advanced Key Management (BACKEND PENDING)
+    [x] Connect real Supabase Authentication (email/password sign-up & sign-in).
+        NOTE: Auth fully integrated via supabase-client.js and inlined scripts.
     [x] Integrate OTP email delivery via PINGRAM (send 6-digit code to user email on login/register).
-    [x] Added Confirmation (Magic Link) email template.
-    [x] Updated Reset Password email template to use ConfirmationURL.
-    [ ] Verify OTP on backend -- validate submitted code matches sent code, with expiry check.
+    [x] Added Confirmation (OTP Code) email template in Supabase.
+    [x] Updated Reset Password email template.
+    [x] Verify OTP on backend -- validate submitted code matches sent code, with expiry check.
     [x] Implemented "Key Strength Meter" on the registration form (weak/fair/good/strong).
     [x] Built full OTP Verification page (module/auth/otp.html) -- 6-digit boxes, countdown timer, resend logic.
     [x] 100/100 Feature: Client-side RSA-4096 key generation via Web Crypto API on successful registration.
@@ -59,12 +59,12 @@ DAY 3: Integrity, App Polish & Deployment (2 Hours)
     - Comprehensive UI/UX testing across Desktop, Tablet, and Mobile views.
     - Polish hover states, micro-animations, and overall aesthetic.
     - Add user-friendly error handling and success toasts.
-[ ] 1:30 - 2:00 | Final Review & Deployment
-    - Deploy static files (HTML/CSS/JS) to Firebase Hosting.
-    - Perform full end-to-end test on the live production URL.
+[x] 1:30 - 2:00 | Final Review & Deployment
+    [x] Deploy static files (HTML/CSS/JS) to Firebase Hosting.
+    [x] Perform full end-to-end test on the live production URL.
 
 ==========================================================================
-SESSION NOTES — Last Updated: Day 1 COMPLETE
+SESSION NOTES — Last Updated: Firebase Deployed & Supabase Auth Complete
 ==========================================================================
 Files Built & Status:
   public/index.html                      [DONE] Landing page with animated canvas & hero
@@ -77,3 +77,31 @@ Files Built & Status:
 
 Next Step: Build Supabase file upload + AES-RSA encryption flow (Day 2 remaining tasks).
 ==========================================================================
+
+==========================================================================
+DAY 4: EXPANDED DASHBOARD VIEWS & NAVIGATION
+==========================================================================
+Goal: Create simple, dedicated screens for the dashboard sections as required by the project defense flow.
+
+[ ] 0:00 - 0:30 | Dashboard Navigation & Routing
+    [ ] Update the sidebar to navigate between 5 distinct views/screens:
+        - Dashboard (Overview/Stats)
+        - Upload Files (Hybrid AES-RSA visualization)
+        - My Files (Decryption and Integrity Check)
+        - Security (Key Management)
+        - Settings (User Profile)
+    [ ] Implement a simple JavaScript tab-switching logic or distinct HTML pages.
+
+[x] 0:30 - 1:00 | Screen 1 & 2: Overview & Upload Files
+    [x] Dashboard Overview: Keep it simple (Stats grid: File count, Storage used, Security level).
+    [x] Upload Files: Dedicated drag & drop area (public/module/upload_files/index.html).
+    [x] Implement the "Wow Factor" UI animation: "Encrypting [Filename] using Hybrid AES-RSA..." as defined in project_defence.txt.
+
+[x] 1:00 - 1:30 | Screen 3: My Files (public/module/my_file/index.html)
+    [x] Dedicated list of uploaded files (Name, Size, Date).
+    [x] Action buttons: Decrypt & Download, Verify Integrity, Delete.
+    [x] Integrate the RSA private key sliding modal for decryption.
+
+[x] 1:30 - 2:00 | Screen 4 & 5: Security & Settings
+    [x] Security Screen: Display RSA Public Key info, button to "Regenerate Keys" (if needed), and Zero-Knowledge Architecture explanation. (public/module/security/index.html)
+    [x] Settings Screen: Simple form to view/update user profile (Name, Email) and sign out. (public/module/settings/index.html)

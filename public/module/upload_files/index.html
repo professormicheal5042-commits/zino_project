@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ZINO — Upload Files</title>
+  <meta name="description" content="Securely upload and encrypt files using client-side Hybrid AES-256-GCM + RSA-4096 encryption."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="upload.css"/>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ══════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="logo-text">Z<span>I</span>NO</div>
+    <div class="logo-sub">Cloud Platform</div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-avatar" id="sbAvatar">U</div>
+    <div>
+      <div class="sb-name" id="sbName">User</div>
+      <div class="sb-email" id="sbEmail">—</div>
+    </div>
+  </div>
+
+  <div class="sb-nav">
+    <a href="../dashboard/index.html" id="navDash">
+      <span class="nav-icon">🏠</span> Dashboard
+    </a>
+    <a href="index.html" class="active" id="navUpload">
+      <span class="nav-icon">☁️</span> Upload Files
+    </a>
+    <a href="../my_files/index.html" id="navFiles">
+      <span class="nav-icon">📁</span> My Files
+    </a>
+    <a href="../security/index.html" id="navSecurity">
+      <span class="nav-icon">🛡️</span> Security
+    </a>
+    <a href="../settings/index.html" id="navSettings">
+      <span class="nav-icon">⚙️</span> Settings
+    </a>
+  </div>
+
+  <div class="sb-bottom">
+    <a href="/module/auth/login.html" id="logoutBtn">
+      <span>🚪</span> Sign Out
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN CONTENT ════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-badge">🔐 CLIENT-SIDE ENCRYPTION</div>
+    <h1>Upload <span class="grad-text">Encrypted Files</span></h1>
+    <p>Files are encrypted in your browser using <strong>Hybrid AES-256-GCM + RSA-4096</strong> before leaving your device. ZINO servers never see your raw data.</p>
+  </div>
+
+  <!-- ── Drop Zone ─────────────────────────────────────────── -->
+  <div class="drop-zone" id="dropZone">
+    <div class="drop-inner">
+      <div class="drop-orbit">
+        <div class="orbit-ring ring1"></div>
+        <div class="orbit-ring ring2"></div>
+        <div class="orbit-ring ring3"></div>
+        <div class="drop-icon" id="dropIcon">⬆️</div>
+      </div>
+      <h2 id="dropTitle">Drag &amp; Drop Files Here</h2>
+      <p id="dropSub">or <label for="fileInput" class="browse-link">browse your device</label> to choose files</p>
+      <div class="type-badges">
+        <span class="badge">📝 Text</span>
+        <span class="badge">🖼️ Image</span>
+        <span class="badge">🎵 Audio</span>
+        <span class="badge">🎬 Video</span>
+        <span class="badge">📄 PDF</span>
+        <span class="badge">📦 ZIP</span>
+      </div>
+      <input type="file" id="fileInput" multiple accept="*/*"/>
+    </div>
+    <div class="drop-overlay" id="dropOverlay">
+      <div class="drop-overlay-text">🔐 Drop to Encrypt &amp; Upload</div>
+    </div>
+  </div>
+
+  <!-- ── Encryption Visualization Panel ───────────────────── -->
+  <div class="enc-panel" id="encPanel" style="display:none;">
+    <div class="enc-panel-header">
+      <div class="enc-title">
+        <span class="enc-pulse"></span>
+        <span id="encFileName">file.txt</span>
+      </div>
+      <div class="enc-badge">HYBRID AES-RSA ENCRYPTION</div>
+    </div>
+
+    <!-- Steps -->
+    <div class="enc-steps" id="encSteps">
+      <div class="enc-step" id="step1">
+        <div class="step-dot"></div>
+        <div class="step-body">
+          <div class="step-title">Step A — AES-256 Key Generation</div>
+          <div class="step-desc">Generating a random 256-bit AES-GCM session key in your browser...</div>
+          <div class="step-code" id="aesKeyPreview">Waiting...</div>
+        </div>
+      </div>
+      <div class="enc-step" id="step2">
+        <div class="step-dot"></div>
+        <div class="step-body">
+          <div class="step-title">Step B — File Encryption (AES-GCM)</div>
+          <div class="step-desc">Encrypting file data using AES-256-GCM with a random 12-byte IV...</div>
+          <div class="step-code" id="ivPreview">Waiting...</div>
+        </div>
+      </div>
+      <div class="enc-step" id="step3">
+        <div class="step-dot"></div>
+        <div class="step-body">
+          <div class="step-title">Step C — RSA-4096 Key Wrapping (OAEP)</div>
+          <div class="step-desc">Wrapping the AES session key with your RSA-4096 Public Key...</div>
+          <div class="step-code" id="rsaPreview">Waiting...</div>
+        </div>
+      </div>
+      <div class="enc-step" id="step4">
+        <div class="step-dot"></div>
+        <div class="step-body">
+          <div class="step-title">Step D — Secure Upload</div>
+          <div class="step-desc">Uploading encrypted cipher-blob to ZINO Secure Storage...</div>
+          <div class="step-code" id="uploadPreview">Waiting...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="enc-progress-wrap">
+      <div class="enc-progress-bar">
+        <div class="enc-progress-fill" id="encFill"></div>
+      </div>
+      <div class="enc-progress-label" id="encLabel">0%</div>
+    </div>
+  </div>
+
+  <!-- ── Queue List ─────────────────────────────────────────── -->
+  <div class="queue-section" id="queueSection" style="display:none;">
+    <div class="queue-header">
+      <span>📋 Upload Queue</span>
+      <span id="queueCount">0 files</span>
+    </div>
+    <div class="queue-list" id="queueList"></div>
+  </div>
+
+  <!-- ── Success Panel ─────────────────────────────────────── -->
+  <div class="success-panel" id="successPanel" style="display:none;">
+    <div class="success-icon">🔐</div>
+    <h2>All Files Encrypted &amp; Uploaded</h2>
+    <p>Your files are now stored as encrypted cipher-blobs. Only your RSA Private Key can decrypt them.</p>
+    <div class="success-actions">
+      <a href="../my_files/index.html" class="btn btn-primary">📁 View My Files</a>
+      <button class="btn btn-ghost" onclick="resetUpload()">⬆️ Upload More</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══ TOAST ════════════════════════════════════════════════ -->
+<div id="toast"></div>
+
+<script src="upload.js"></script>
+</body>
+</html>

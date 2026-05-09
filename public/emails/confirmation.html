@@ -60,7 +60,7 @@
           <tr>
             <td align="center" style="padding:0 48px 12px;">
               <h1 style="font-family:'Inter',Arial,sans-serif;font-size:26px;font-weight:800;color:#ffffff;margin:0;letter-spacing:-0.5px;">
-                Confirm Your Email
+                Your Verification Code
               </h1>
             </td>
           </tr>
@@ -69,38 +69,31 @@
           <tr>
             <td align="center" style="padding:0 48px 32px;">
               <p style="font-family:'Inter',Arial,sans-serif;font-size:15px;color:#94A3B8;margin:0;line-height:1.6;text-align:center;">
-                Welcome to ZINO! Click the button below to confirm your account and start your secure cloud journey.
+                Welcome to ZINO! Enter the 6-digit code below on the verification page to activate your account.
               </p>
             </td>
           </tr>
 
-          <!-- CONFIRM BUTTON -->
+          <!-- OTP CODE BOX -->
           <tr>
-            <td align="center" style="padding:0 48px 36px;">
+            <td align="center" style="padding:0 48px 12px;">
+              <p style="font-family:'Inter',Arial,sans-serif;font-size:12px;font-weight:600;letter-spacing:3px;color:#00D4FF;text-transform:uppercase;margin:0 0 16px 0;">Verification Code</p>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td align="center"
-                    style="background:linear-gradient(135deg,#0047FF,#0066ff);border-radius:50px;box-shadow:0 0 30px rgba(0,71,255,0.5);">
-                    <a href="{{ .ConfirmationURL }}" class="btn-confirm"
-                      style="display:inline-block;padding:16px 48px;font-family:'Inter',Arial,sans-serif;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.3px;border-radius:50px;">
-                      Confirm Account →
-                    </a>
+                    style="background:linear-gradient(135deg,rgba(0,71,255,0.15),rgba(0,212,255,0.08));border:2px solid rgba(0,71,255,0.5);border-radius:20px;padding:28px 52px;box-shadow:0 0 40px rgba(0,71,255,0.25);">
+                    <div style="font-family:'Inter',Arial,sans-serif;font-size:52px;font-weight:900;color:#ffffff;letter-spacing:14px;line-height:1;">{{ .Token }}</div>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- FALLBACK LINK -->
+          <!-- EXPIRY NOTE -->
           <tr>
-            <td align="center" style="padding:0 48px 32px;">
-              <p style="font-family:'Inter',Arial,sans-serif;font-size:12px;color:#475569;margin:0;line-height:1.8;">
-                Or copy and paste this URL into your browser:
-              </p>
-              <p style="font-family:'Inter',Arial,sans-serif;font-size:12px;margin:4px 0 0 0;">
-                <a href="{{ .ConfirmationURL }}" style="color:#0047FF;text-decoration:underline;word-break:break-all;">
-                  {{ .ConfirmationURL }}
-                </a>
+            <td align="center" style="padding:16px 48px 32px;">
+              <p style="font-family:'Inter',Arial,sans-serif;font-size:13px;color:#475569;margin:0;line-height:1.8;">
+                ⏱ This code expires in <strong style="color:#94A3B8;">10 minutes</strong>. Do not share it with anyone.
               </p>
             </td>
           </tr>

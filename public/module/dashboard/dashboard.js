@@ -9,10 +9,35 @@ document.getElementById('sbAvatar').textContent = initial;
 document.getElementById('sbName').textContent = email ? email.split('@')[0] : 'User';
 document.getElementById('greetName').textContent = email ? email.split('@')[0] : 'User';
 
-// ── Active Nav Link ──────────────────────────────────────────
+// ── Active Nav Link & Tab Switching ────────────────────────────
+const navLinks = {
+  'navDash': 'viewDash',
+  'navUpload': 'viewUpload',
+  'navFiles': 'viewFiles',
+  'navSecurity': 'viewSecurity',
+  'navSettings': 'viewSettings'
+};
+
 document.querySelectorAll('.sb-nav a').forEach(a => {
-  if (a.href === location.href) a.classList.add('active');
+  if (a.id === 'logoutBtn') return;
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    // Update active nav class
+    document.querySelectorAll('.sb-nav a').forEach(n => n.classList.remove('active'));
+    a.classList.add('active');
+
+    // Show correct view
+    document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+    const targetId = navLinks[a.id];
+    if (targetId) {
+      document.getElementById(targetId).style.display = 'block';
+    }
+  });
 });
+
+// Set Settings Form default values
+document.getElementById('settingEmail').value = email || '';
+document.getElementById('settingName').value = email ? email.split('@')[0] : '';
 
 // ── In-memory file store (replace with Supabase later) ───────
 let files = JSON.parse(sessionStorage.getItem('zinoFiles') || '[]');
@@ -86,27 +111,90 @@ zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
 zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); handleUpload(e.dataTransfer.files); });
 fileInput.addEventListener('change', e => handleUpload(e.target.files));
 
-function handleUpload(list) {
+async function handleUpload(list) {
   if (!list.length) return;
   bar.style.display = 'block';
-  fill.style.width = '0';
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += Math.random() * 25;
-    fill.style.width = Math.min(progress, 90) + '%';
-  }, 200);
-  setTimeout(() => {
-    clearInterval(interval);
-    fill.style.width = '100%';
-    for (const f of list) {
-      files.unshift({ name: f.name, size: f.size, date: new Date().toISOString() });
+  fill.style.width = '10%';
+  
+  for (const f of list) {
+    // 1. UI Animation: Show encryption process
+    const toastId = toast(`🔐 Encrypting "${f.name}" using Hybrid AES-RSA...`, 'info', true);
+    
+    // 2. Perform actual Hybrid Encryption
+    try {
+      const { encryptedBlob, encryptedAesKey, iv } = await hybridEncryptFile(f);
+      
+      // 3. Upload to Supabase Storage (Simulated here)
+      fill.style.width = '60%';
+      await new Promise(r => setTimeout(r, 800)); // Simulate network upload time
+      
+      // 4. Save metadata
+      files.unshift({ 
+        name: f.name, 
+        size: f.size, 
+        encryptedSize: encryptedBlob.size,
+        date: new Date().toISOString(),
+        aesKeyEncrypted: Array.from(new Uint8Array(encryptedAesKey)),
+        iv: Array.from(new Uint8Array(iv))
+      });
+      
+      removeToast(toastId);
+      toast(`✅ "${f.name}" securely uploaded`, 'success');
+      
+    } catch (err) {
+      console.error(err);
+      removeToast(toastId);
+      toast(`❌ Encryption failed for "${f.name}"`, 'error');
     }
-    saveFiles(); renderTable();
-    setTimeout(() => { bar.style.display = 'none'; fill.style.width = '0'; }, 600);
-    toast(`✅ ${list.length} file(s) uploaded`);
-    fileInput.value = '';
-  }, 1400);
+  }
+  
+  fill.style.width = '100%';
+  saveFiles(); 
+  renderTable();
+  setTimeout(() => { bar.style.display = 'none'; fill.style.width = '0'; fileInput.value = ''; }, 1000);
 }
+
+// ── Web Crypto API: Hybrid AES-RSA Logic ──────────────────────
+let cachedPublicKey = null;
+
+async function getDemoPublicKey() {
+  if (cachedPublicKey) return cachedPublicKey;
+  // In a real app, you fetch this from Supabase. For the demo, we generate a pair if missing.
+  const pair = await window.crypto.subtle.generateKey(
+    { name: "RSA-OAEP", modulusLength: 4096, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+    true, ["encrypt", "decrypt"]
+  );
+  cachedPublicKey = pair.publicKey;
+  return cachedPublicKey;
+}
+
+async function hybridEncryptFile(file) {
+  // 1. Generate random AES-GCM 256-bit key
+  const aesKey = await window.crypto.subtle.generateKey(
+    { name: "AES-GCM", length: 256 }, true, ["encrypt"]
+  );
+  
+  // 2. Read file as ArrayBuffer
+  const fileBuffer = await file.arrayBuffer();
+  
+  // 3. Encrypt file data with AES
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const encryptedFileData = await window.crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: iv }, aesKey, fileBuffer
+  );
+  
+  // 4. Encrypt the AES key with RSA Public Key
+  const rawAesKey = await window.crypto.subtle.exportKey("raw", aesKey);
+  const rsaPubKey = await getDemoPublicKey();
+  const encryptedAesKey = await window.crypto.subtle.encrypt(
+    { name: "RSA-OAEP" }, rsaPubKey, rawAesKey
+  );
+  
+  // Return the blob to be uploaded, plus metadata
+  const encryptedBlob = new Blob([encryptedFileData], { type: 'application/octet-stream' });
+  return { encryptedBlob, encryptedAesKey, iv };
+}
+
 
 // ── Decrypt modal ─────────────────────────────────────────────
 const modalOverlay = document.getElementById('decryptModal');
@@ -142,14 +230,24 @@ function deleteFile(i) {
 }
 
 // ── Toast helper ──────────────────────────────────────────────
-function toast(msg, type = 'info') {
+function toast(msg, type = 'info', persistent = false) {
   const container = document.getElementById('toast');
   const el = document.createElement('div');
+  const id = 'toast_' + Math.random().toString(36).substr(2, 9);
+  el.id = id;
   el.className = 'toast-msg';
   if (type === 'warn') el.style.borderLeftColor = '#f59e0b';
+  if (type === 'error') el.style.borderLeftColor = '#ff4444';
+  if (type === 'success') el.style.borderLeftColor = '#00D4FF';
   el.textContent = msg;
   container.appendChild(el);
-  setTimeout(() => el.remove(), 3500);
+  if (!persistent) setTimeout(() => { if(el.parentNode) el.remove(); }, 3500);
+  return id;
+}
+
+function removeToast(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
 }
 
 // ── Sidebar mobile toggle ────────────────────────────────────

@@ -1,0 +1,42 @@
+================================================================================
+FINAL YEAR PROJECT DEFENSE SCRIPT / ARCHITECTURE EXPLANATION
+Module: Client-Side Hybrid AES-RSA Security Architecture
+================================================================================
+
+TITLE: 
+Zero-Knowledge Cloud Storage using Hybrid Cryptography (AES-256-GCM & RSA-4096)
+
+1. INTRODUCTION & PROBLEM STATEMENT
+"In traditional cloud storage platforms, files are encrypted on the server-side. This means the service provider holds both your files and the encryption keys, creating a single point of failure and vulnerability to insider threats or server breaches. My project, ZINO, solves this by implementing a 'Zero-Knowledge' architecture where files are encrypted strictly on the client-side (the user's browser) before they ever touch the network."
+
+2. WHY HYBRID ENCRYPTION?
+"To achieve this, I implemented a Hybrid Cryptography model. 
+- Why not just use RSA? Asymmetric encryption (RSA) is highly secure for key exchange but extremely slow and computationally impossible for encrypting large files like videos or PDFs.
+- Why not just use AES? Symmetric encryption (AES) is incredibly fast for large files, but it creates a key distribution problem—how do you securely store the AES key so only the user can decrypt it later?
+- The Solution (Hybrid): I combined the speed of AES-256 with the security of RSA-4096.
+
+3. THE UPLOAD WORKFLOW (Step-by-Step Defense Explanation)
+"When a user drags and drops a file into the ZINO dashboard, the following sequence occurs locally in their browser using the Web Crypto API:"
+
+  STEP A: AES Key Generation
+  "The system dynamically generates a highly secure, one-time use 256-bit AES-GCM (Galois/Counter Mode) session key."
+
+  STEP B: File Encryption
+  "The file is read into memory as an ArrayBuffer. The AES-256 key, combined with a randomly generated 12-byte Initialization Vector (IV), encrypts the raw file data. This transforms the file into an unreadable cipher-blob."
+
+  STEP C: RSA Key Wrapping
+  "Instead of saving the AES key in plain text, the system retrieves the user's RSA-4096 Public Key. It uses the RSA-OAEP algorithm to encrypt (or 'wrap') the AES session key."
+
+  STEP D: Secure Upload
+  "Finally, the system uploads the encrypted file blob to the Supabase Storage bucket, and saves the encrypted AES key and the IV to the Supabase Database. Because the AES key is encrypted with the user's RSA Public Key, it can ONLY be decrypted by the user's corresponding RSA Private Key (which they downloaded as a .pem file during registration)."
+
+4. CONCLUSION & SECURITY IMPACT (The "Wow" Factor)
+"By implementing this, I have ensured a mathematically provable Zero-Knowledge environment. Even if a malicious actor, or a rogue administrator, gains full database access to Supabase, they will only find scrambled file blobs and RSA-encrypted AES keys. Without the user's local Private Key, the data is computationally infeasible to breach. Furthermore, the UI provides real-time visual feedback ('Encrypting using Hybrid AES-RSA...'), giving the user total transparency into the cryptographic process."
+
+================================================================================
+KEY TERMINOLOGY TO MEMORIZE FOR EXAMINERS:
+- Zero-Knowledge Architecture: The server knows absolutely nothing about the plain-text data.
+- AES-GCM: Advanced Encryption Standard in Galois/Counter Mode (Provides both confidentiality and data authenticity).
+- RSA-OAEP: Optimal Asymmetric Encryption Padding (Prevents deterministic chosen-plaintext attacks).
+- Web Crypto API: A native browser API that ensures cryptographic operations happen in a secure, non-extractable memory space, preventing malicious JavaScript extensions from stealing the keys.
+================================================================================

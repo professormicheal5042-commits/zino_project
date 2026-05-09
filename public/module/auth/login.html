@@ -10,6 +10,63 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- Supabase Auth — inlined for guaranteed availability -->
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://xjsoxlfsojlsoafpovht.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqc294bGZzb2psc29hZnBvdmh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTE0OTAsImV4cCI6MjA5Mzc4NzQ5MH0.GUaXto93eAHc-obMnODuanfbgydr1B7xpmNCGPrVOcA';
+
+      var _supabase = null;
+      function getClient() {
+        if (!_supabase) {
+          if (!window.supabase || !window.supabase.createClient) {
+            throw new Error('Supabase SDK failed to load. Check your internet connection or disable any ad-blockers.');
+          }
+          _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        return _supabase;
+      }
+
+      window.registerUser = async function (email, password, metadata) {
+        metadata = metadata || {};
+        var client = getClient();
+        var result = await client.auth.signUp({ email: email, password: password, options: { data: metadata } });
+        if (result.error) throw result.error;
+        return result.data;
+      };
+
+      window.loginUser = async function (email, password) {
+        var client = getClient();
+        var result = await client.auth.signInWithPassword({ email: email, password: password });
+        if (result.error) throw result.error;
+        return result.data;
+      };
+
+      window.verifyOTPCode = async function (email, token, type) {
+        type = type || 'signup';
+        var client = getClient();
+        var result = await client.auth.verifyOtp({ email: email, token: token, type: type });
+        if (result.error) throw result.error;
+        return result.data;
+      };
+
+      window.logoutUser = async function () {
+        var result = await getClient().auth.signOut();
+        if (result.error) throw result.error;
+      };
+
+      window.getCurrentSession = async function () {
+        var result = await getClient().auth.getSession();
+        if (result.error) throw result.error;
+        return result.data.session;
+      };
+    })();
+  </script>
+
   <style>
     *,
     *::before,
@@ -822,18 +879,43 @@
     }
 
     // LOGIN FORM
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const pw = document.getElementById('loginPw').value;
       if (!email || !pw) { showStatus('Please fill in all fields.', 'error'); return; }
+      
       const btn = document.getElementById('loginBtn');
-      btn.innerHTML = '<span class="ripple-bg"></span>Sending OTP...';
+      btn.innerHTML = '<span class="ripple-bg"></span>Authenticating...';
       btn.disabled = true; btn.style.opacity = '0.8';
-      // Store email for OTP page to display masked version
-      sessionStorage.setItem('zinoEmail', email);
-      sessionStorage.setItem('zinoFlow', 'login');
-      setTimeout(() => { window.location.href = 'otp.html'; }, 1400); // otp.html in same folder
+      hideStatus();
+
+      try {
+        // Call Supabase Authentication
+        const data = await loginUser(email, pw);
+        
+        // Store email for OTP/Dashboard context
+        sessionStorage.setItem('zinoEmail', email);
+        sessionStorage.setItem('zinoFlow', 'login');
+        
+        // Check if user needs OTP verification
+        if (data.session === null) {
+           showStatus('OTP sent to your email.', 'success');
+           setTimeout(() => { window.location.href = 'otp.html'; }, 1000);
+        } else {
+           // Fully authenticated
+           setTimeout(() => { window.location.href = '../dashboard/index.html'; }, 500);
+        }
+      } catch (err) {
+        showStatus(err.message || 'Login failed. Please try again.', 'error');
+        btn.innerHTML = '<span class="ripple-bg"></span>Sign In →';
+        btn.disabled = false; btn.style.opacity = '1';
+      }
+    }
+
+    function hideStatus() {
+      const el = document.getElementById('statusMsg');
+      el.className = 'status-msg';
     }
 
     function showStatus(msg, type) {

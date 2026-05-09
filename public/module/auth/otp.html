@@ -7,8 +7,64 @@
   <title>ZINO — Verify Your Identity</title>
   <meta name="description" content="Enter your 6-digit OTP to verify your ZINO account." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- Supabase Auth — inlined for guaranteed availability -->
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://xjsoxlfsojlsoafpovht.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqc294bGZzb2psc29hZnBvdmh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTE0OTAsImV4cCI6MjA5Mzc4NzQ5MH0.GUaXto93eAHc-obMnODuanfbgydr1B7xpmNCGPrVOcA';
+
+      var _supabase = null;
+      function getClient() {
+        if (!_supabase) {
+          if (!window.supabase || !window.supabase.createClient) {
+            throw new Error('Supabase SDK failed to load. Check your internet connection or disable any ad-blockers.');
+          }
+          _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        return _supabase;
+      }
+
+      window.registerUser = async function (email, password, metadata) {
+        metadata = metadata || {};
+        var client = getClient();
+        var result = await client.auth.signUp({ email: email, password: password, options: { data: metadata } });
+        if (result.error) throw result.error;
+        return result.data;
+      };
+
+      window.loginUser = async function (email, password) {
+        var client = getClient();
+        var result = await client.auth.signInWithPassword({ email: email, password: password });
+        if (result.error) throw result.error;
+        return result.data;
+      };
+
+      window.verifyOTPCode = async function (email, token, type) {
+        type = type || 'signup';
+        var client = getClient();
+        var result = await client.auth.verifyOtp({ email: email, token: token, type: type });
+        if (result.error) throw result.error;
+        return result.data;
+      };
+
+      window.logoutUser = async function () {
+        var result = await getClient().auth.signOut();
+        if (result.error) throw result.error;
+      };
+
+      window.getCurrentSession = async function () {
+        var result = await getClient().auth.getSession();
+        if (result.error) throw result.error;
+        return result.data.session;
+      };
+    })();
+  </script>
+
   <style>
     *,
     *::before,
@@ -835,8 +891,8 @@
       verifyBtn.disabled = true;
     }
 
-    /* ─── COUNTDOWN TIMER: 5 minutes ─── */
-    const TOTAL = 300;
+    /* ─── COUNTDOWN TIMER: 10 minutes (matches Supabase OTP lifetime) ─── */
+    const TOTAL = 600;
     let timeLeft = TOTAL;
     let timerInterval = null;
 
@@ -880,7 +936,7 @@
     startTimer();
 
     /* ─── VERIFY OTP ─── */
-    function verifyOTP() {
+    async function verifyOTP() {
       const code = getCode();
       if (code.length !== 6) return;
 
@@ -891,46 +947,87 @@
       btnText.innerHTML = '<span class="spinner"></span>Verifying...';
       hideStatus();
 
-      // Simulate API call (replace with real Firebase/backend call)
-      setTimeout(() => {
+      const email = sessionStorage.getItem('zinoEmail');
+      const flow = sessionStorage.getItem('zinoFlow') || 'signup'; // 'login' or 'register'
+
+      try {
+        // Call Supabase Authentication
+        // Map flow correctly: 'register' -> 'signup', 'login' -> 'magiclink' or 'email' (depending on setup)
+        const verifyType = flow === 'register' ? 'signup' : 'email';
+        await verifyOTPCode(email, code, verifyType);
+        
+        // SUCCESS
+        btn.classList.remove('loading');
+        btnText.textContent = 'Verify Code';
+        btn.disabled = false;
+        
+        boxes.forEach(b => b.classList.add('success-glow'));
+        clearInterval(timerInterval);
+        
+        if (flow === 'register') {
+           setTimeout(startProvisioning, 800);
+        } else {
+           setTimeout(() => { window.location.href = '../dashboard/index.html'; }, 800);
+        }
+
+      } catch (err) {
+        // FAIL
         btn.classList.remove('loading');
         btnText.textContent = 'Verify Code';
         btn.disabled = false;
 
-        // Demo: any 6-digit code works; in production verify against backend
-        if (code.length === 6) {
-          // SUCCESS
-          boxes.forEach(b => b.classList.add('success-glow'));
-          clearInterval(timerInterval);
-          setTimeout(startProvisioning, 800);
-        } else {
-          // FAIL
-          boxes.forEach(b => { b.classList.add('error-shake'); setTimeout(() => b.classList.remove('error-shake'), 500); });
-          showStatus('Invalid code. Please try again.', 'error');
-          clearBoxes();
-        }
-      }, 1500);
+        boxes.forEach(b => { b.classList.add('error-shake'); setTimeout(() => b.classList.remove('error-shake'), 500); });
+        showStatus(err.message || 'Invalid code. Please try again.', 'error');
+        clearBoxes();
+      }
     }
 
-    /* ─── RESEND CODE ─── */
-    function resendCode() {
+    /* ─── RESEND CODE (real Supabase resend) ─── */
+    async function resendCode() {
       const rb = document.getElementById('resendBtn');
+      const email = sessionStorage.getItem('zinoEmail');
+      const flow = sessionStorage.getItem('zinoFlow') || 'register';
+
+      if (!email) {
+        showStatus('Session lost. Please go back and sign up again.', 'error');
+        return;
+      }
+
       rb.disabled = true;
       rb.textContent = 'Sending...';
       hideStatus();
       clearBoxes();
       boxes.forEach(b => b.disabled = false);
 
-      setTimeout(() => {
-        rb.textContent = 'Resend in 60s';
-        showStatus('A new 6-digit code has been sent to your email.', 'success');
+      try {
+        // Determine correct type: signup resend or magic link
+        const resendType = flow === 'register' ? 'signup' : 'email';
+        var client;
+        // Access supabase client via getClient if available, else fallback
+        if (typeof getClient === 'function') {
+          client = getClient();
+        } else {
+          throw new Error('Supabase not available');
+        }
+        const { error } = await client.auth.resend({ type: resendType, email: email });
+        if (error) throw error;
+
+        showStatus('✓ A new 6-digit code has been sent to ' + email, 'success');
+        timeLeft = TOTAL;
         startTimer();
-        // Re-enable resend after 60s
-        setTimeout(() => {
-          rb.disabled = false;
-          rb.textContent = 'Resend';
-        }, 60000);
-      }, 1000);
+      } catch (err) {
+        showStatus('Failed to resend: ' + (err.message || 'Please try again.'), 'error');
+        rb.disabled = false;
+        rb.textContent = 'Resend Code';
+        return;
+      }
+
+      // Lock resend button for 60 seconds
+      rb.textContent = 'Resend in 60s';
+      setTimeout(() => {
+        rb.disabled = false;
+        rb.textContent = 'Resend Code';
+      }, 60000);
     }
 
     /* ─── STATUS HELPERS ─── */

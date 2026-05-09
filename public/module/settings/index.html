@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ZINO — Settings</title>
+  <meta name="description" content="Manage your ZINO account profile, preferences, and security settings."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="settings.css"/>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ══════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="logo-text">Z<span>I</span>NO</div>
+    <div class="logo-sub">Cloud Platform</div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-avatar" id="sbAvatar">U</div>
+    <div>
+      <div class="sb-name" id="sbName">User</div>
+      <div class="sb-email" id="sbEmail">—</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <a href="../dashboard/index.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="../upload_files/index.html"><span class="nav-icon">☁️</span> Upload Files</a>
+    <a href="../my_file/index.html"><span class="nav-icon">📁</span> My Files</a>
+    <a href="../security/index.html"><span class="nav-icon">🛡️</span> Security</a>
+    <a href="index.html" class="active"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+  <div class="sb-bottom">
+    <a href="../auth/login.html" id="logoutBtn"><span>🚪</span> Sign Out</a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═════════════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-badge">⚙️ ACCOUNT MANAGEMENT</div>
+    <h1>Account <span class="grad-text">Settings</span></h1>
+    <p>Manage your profile, update your display name, and control your account preferences.</p>
+  </div>
+
+  <div class="settings-layout">
+
+    <!-- ── LEFT COLUMN ─────────────────────────────────────── -->
+    <div class="settings-main">
+
+      <!-- Profile Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">👤</span>
+            <div>
+              <div class="card-heading">Profile Information</div>
+              <div class="card-sub">Update your display name and view your account email.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <!-- Avatar Section -->
+          <div class="avatar-section">
+            <div class="avatar-large" id="avatarLarge">U</div>
+            <div class="avatar-info">
+              <div class="avatar-name" id="avatarName">User</div>
+              <div class="avatar-email" id="avatarEmail">—</div>
+              <div class="avatar-badge">🔐 Zero-Knowledge Account</div>
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Display Name -->
+          <div class="form-group">
+            <label class="form-label" for="inputName">Display Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">✏️</span>
+              <input type="text" id="inputName" class="form-input" placeholder="Enter your display name"/>
+            </div>
+            <div class="form-hint">This name is shown on your dashboard. It is stored locally only.</div>
+          </div>
+
+          <!-- Email (read-only) -->
+          <div class="form-group">
+            <label class="form-label" for="inputEmail">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">📧</span>
+              <input type="email" id="inputEmail" class="form-input form-input-readonly" readonly disabled placeholder="—"/>
+            </div>
+            <div class="form-hint">Your email is tied to your Supabase account and cannot be changed here.</div>
+          </div>
+
+          <!-- Username -->
+          <div class="form-group">
+            <label class="form-label" for="inputUsername">Username</label>
+            <div class="input-wrap">
+              <span class="input-icon">🏷️</span>
+              <input type="text" id="inputUsername" class="form-input" placeholder="e.g. john_doe"/>
+            </div>
+            <div class="form-hint">Your unique identifier on the ZINO platform.</div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="saveProfileBtn" onclick="saveProfile()">
+              <span id="saveBtnLabel">💾 Save Changes</span>
+            </button>
+            <button class="btn btn-ghost" onclick="resetForm()">↩️ Reset</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Password / Security Note -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🔏</span>
+            <div>
+              <div class="card-heading">Password &amp; Authentication</div>
+              <div class="card-sub">Your account uses Supabase Auth — password changes are handled via email.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <div class="info-item">
+              <div class="info-label">Authentication Method</div>
+              <div class="info-value">📧 Email + Password (Supabase Auth)</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Email Verification</div>
+              <div class="info-value">✅ Verified via 6-Digit OTP</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Session Type</div>
+              <div class="info-value">🔐 Zero-Knowledge (Client-Side Keys)</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Encryption Status</div>
+              <div class="info-value">🛡️ AES-256-GCM + RSA-4096 Active</div>
+            </div>
+          </div>
+          <div class="form-actions" style="margin-top: 0;">
+            <button class="btn btn-ghost" onclick="sendPasswordReset()">📧 Send Password Reset Email</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT COLUMN ────────────────────────────────────── -->
+    <div class="settings-side">
+
+      <!-- Account Summary Card -->
+      <div class="card">
+        <div class="card-header" style="border-bottom: none; padding-bottom: 16px;">
+          <div class="card-title">
+            <span class="card-icon">📊</span>
+            <div class="card-heading">Account Summary</div>
+          </div>
+        </div>
+        <div class="summary-list">
+          <div class="summary-item">
+            <span class="summary-label">Files Stored</span>
+            <span class="summary-value" id="summaryFiles">0</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Storage Used</span>
+            <span class="summary-value" id="summaryStorage">0 B</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Encryption</span>
+            <span class="summary-value cyan">AES+RSA</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Key Status</span>
+            <span class="summary-value green">Active</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Account Type</span>
+            <span class="summary-value">Free Tier</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="card danger-card">
+        <div class="card-header" style="border-bottom: none; padding-bottom: 16px;">
+          <div class="card-title">
+            <span class="card-icon">⚠️</span>
+            <div class="card-heading" style="color: var(--danger);">Danger Zone</div>
+          </div>
+        </div>
+        <div class="danger-body">
+          <p class="danger-desc">Signing out will clear your session. Your encrypted files remain safe on ZINO servers.</p>
+          <button class="btn btn-signout" onclick="confirmSignOut()">🚪 Sign Out of ZINO</button>
+
+          <div class="form-divider" style="margin: 16px 0;"></div>
+
+          <p class="danger-desc">Permanently delete your account and all associated data. This cannot be undone.</p>
+          <button class="btn btn-delete-account" onclick="openDeleteAccount()">🗑️ Delete Account</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════
+     SIGN OUT CONFIRM MODAL
+     ════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="signOutBackdrop">
+  <div class="confirm-modal">
+    <div class="modal-icon">🚪</div>
+    <h2>Sign Out?</h2>
+    <p>You will be redirected to the login page. Your encrypted files remain stored safely on ZINO.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('signOutBackdrop')">Cancel</button>
+      <button class="btn btn-signout" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DELETE ACCOUNT MODAL
+     ════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="deleteAccountBackdrop">
+  <div class="confirm-modal">
+    <div class="modal-icon">⚠️</div>
+    <h2>Delete Account?</h2>
+    <p>This will <strong>permanently delete</strong> your account and all your encrypted files from ZINO. This action is <strong>irreversible</strong>.</p>
+    <div class="form-group" style="margin-top: 16px;">
+      <label class="form-label">Type your email to confirm</label>
+      <input type="email" id="deleteConfirmEmail" class="form-input" placeholder="your@email.com"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('deleteAccountBackdrop')">Cancel</button>
+      <button class="btn btn-delete-account" onclick="deleteAccount()">Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST ════════════════════════════════════════════════ -->
+<div id="toast"></div>
+
+<script src="settings.js"></script>
+</body>
+</html>
