@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
-   ZINO — Settings JavaScript
+   Famous Storage — Settings JavaScript
    Profile management, sign out, account summary
    ═══════════════════════════════════════════════════════════ */
 
 'use strict';
 
 // ── Auth Guard ───────────────────────────────────────────────
-const email = sessionStorage.getItem('zinoEmail');
+const email = sessionStorage.getItem('famousStorageEmail');
 if (!email) window.location.href = '../auth/login.html';
 
 // ── Toast ────────────────────────────────────────────────────
@@ -19,13 +19,12 @@ function toast(msg, type = 'info', dur = 3500) {
 }
 
 // ── Populate from session ─────────────────────────────────────
-const storedName     = sessionStorage.getItem('zinoName')     || (email ? email.split('@')[0] : 'User');
-const storedUsername = sessionStorage.getItem('zinoUsername') || '';
+const storedName     = sessionStorage.getItem('famousStorageName')     || (email ? email.split('@')[0] : 'User');
+const storedUsername = sessionStorage.getItem('famousStorageUsername') || '';
 
 // Sidebar
 document.getElementById('sbEmail').textContent  = email || '';
-const initial = (email || 'U')[0].toUpperCase();
-document.getElementById('sbAvatar').textContent = initial;
+document.getElementById('sbAvatar').textContent = storedName[0].toUpperCase();
 document.getElementById('sbName').textContent   = storedName;
 
 // Avatar card
@@ -39,7 +38,7 @@ document.getElementById('inputEmail').value    = email || '';
 document.getElementById('inputUsername').value = storedUsername;
 
 // Account Summary
-const files = JSON.parse(sessionStorage.getItem('zinoFiles') || '[]');
+const files = JSON.parse(sessionStorage.getItem('famousStorageFiles') || '[]');
 const totalBytes = files.reduce((a, f) => a + (f.size || 0), 0);
 document.getElementById('summaryFiles').textContent   = files.length;
 document.getElementById('summaryStorage').textContent = fmtSize(totalBytes);
@@ -67,8 +66,8 @@ function saveProfile() {
 
   setTimeout(() => {
     // Persist to sessionStorage
-    sessionStorage.setItem('zinoName',     newName);
-    sessionStorage.setItem('zinoUsername', newUsername);
+    sessionStorage.setItem('famousStorageName',     newName);
+    sessionStorage.setItem('famousStorageUsername', newUsername);
 
     // Update live UI
     document.getElementById('sbName').textContent           = newName;
@@ -83,8 +82,8 @@ function saveProfile() {
 
 // ── Reset Form ───────────────────────────────────────────────
 function resetForm() {
-  document.getElementById('inputName').value     = sessionStorage.getItem('zinoName')     || storedName;
-  document.getElementById('inputUsername').value = sessionStorage.getItem('zinoUsername') || '';
+  document.getElementById('inputName').value     = sessionStorage.getItem('famousStorageName')     || storedName;
+  document.getElementById('inputUsername').value = sessionStorage.getItem('famousStorageUsername') || '';
   toast('↩️ Form reset to saved values.', 'info');
 }
 
@@ -102,14 +101,14 @@ function confirmSignOut() {
 
 function signOut() {
   // Clear all session data
-  sessionStorage.removeItem('zinoEmail');
-  sessionStorage.removeItem('zinoName');
-  sessionStorage.removeItem('zinoUsername');
-  sessionStorage.removeItem('zinoFlow');
-  sessionStorage.removeItem('zinoPubKey');
-  sessionStorage.removeItem('zinoPrivKey');
-  sessionStorage.removeItem('zinoKeyDate');
-  sessionStorage.removeItem('zinoFiles');
+  sessionStorage.removeItem('famousStorageEmail');
+  sessionStorage.removeItem('famousStorageName');
+  sessionStorage.removeItem('famousStorageUsername');
+  sessionStorage.removeItem('famousStorageFlow');
+  sessionStorage.removeItem('famousStoragePubKey');
+  sessionStorage.removeItem('famousStoragePrivKey');
+  sessionStorage.removeItem('famousStorageKeyDate');
+  sessionStorage.removeItem('famousStorageFiles');
 
   toast('👋 Signing out...', 'info', 1500);
   setTimeout(() => {
@@ -147,3 +146,4 @@ function closeModal(id) {
     if (e.target.id === id) closeModal(id);
   });
 });
+

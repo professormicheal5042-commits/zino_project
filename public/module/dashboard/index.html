@@ -1,195 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>ZINO — Secure Dashboard</title>
-  <meta name="description" content="ZINO secure cloud dashboard. Upload, encrypt and manage your files with military-grade AES-RSA encryption."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="dashboard.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Famous Storage — Secure Dashboard</title>
+  <meta name="description"
+    content="Famous Storage secure cloud dashboard. Upload, encrypt and manage your files with military-grade AES-RSA encryption." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="dashboard.css" />
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://xjsoxlfsojlsoafpovht.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqc294bGZzb2psc29hZnBvdmh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTE0OTAsImV4cCI6MjA5Mzc4NzQ5MH0.GUaXto93eAHc-obMnODuanfbgydr1B7xpmNCGPrVOcA';
+      var _supabase = null;
+      function getClient() {
+        if (!_supabase) {
+          if (!window.supabase || !window.supabase.createClient) throw new Error('Supabase SDK not loaded.');
+          _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        return _supabase;
+      }
+      window.getSupabaseClient = getClient;
+    })();
+  </script>
 </head>
+
 <body>
 
-<!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
-<nav id="sidebar">
-  <div class="sb-logo">
-    <div class="logo-text">Z<span>I</span>NO</div>
-    <div class="logo-sub">Cloud Platform</div>
-  </div>
-
-  <div class="sb-user">
-    <div class="sb-avatar" id="sbAvatar">U</div>
-    <div>
-      <div class="sb-name" id="sbName">User</div>
-      <div class="sb-email" id="sbEmail">—</div>
+  <!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
+  <nav id="sidebar">
+    <div class="sb-logo">
+      <div class="logo-text">Famo<span>us</span> Cloud</div>
+      <div class="logo-sub">Cloud Platform</div>
     </div>
-  </div>
 
-  <div class="sb-nav">
-    <a href="#" class="active" id="navDash">
-      <span class="nav-icon">🏠</span> Dashboard
-    </a>
-    <a href="#" id="navUpload">
-      <span class="nav-icon">☁️</span> Upload Files
-    </a>
-    <a href="#" id="navFiles">
-      <span class="nav-icon">📁</span> My Files
-    </a>
-    <a href="#" id="navSecurity">
-      <span class="nav-icon">🛡️</span> Security
-    </a>
-    <a href="#" id="navSettings">
-      <span class="nav-icon">⚙️</span> Settings
-    </a>
-  </div>
-
-  <div class="sb-bottom">
-    <a href="/module/auth/login.html" id="logoutBtn">
-      <span>🚪</span> Sign Out
-    </a>
-  </div>
-</nav>
-
-<!-- ═══ MAIN CONTENT ══════════════════════════════════════ -->
-<main id="main">
-
-  <!-- Page Header -->
-  <div class="page-header">
-    <button id="menuToggle" style="display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;margin-bottom:12px;">☰</button>
-    <h1>Welcome back, <span id="greetName" style="color:#00D4FF;">User</span> 👋</h1>
-    <p>Your files are encrypted and secured with AES-256 + RSA-4096.</p>
-  </div>
-
-  <!-- VIEW: DASHBOARD OVERVIEW -->
-  <div class="tab-content active" id="viewDash">
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">📂</div>
-        <div class="stat-value" id="statFiles">0</div>
-        <div class="stat-label">Total Files</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">💾</div>
-        <div class="stat-value" id="statStorage">0 B</div>
-        <div class="stat-label">Storage Used</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🕐</div>
-        <div class="stat-value" style="font-size:16px;" id="statLast">—</div>
-        <div class="stat-label">Last Upload</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🔐</div>
-        <div class="stat-value" style="font-size:18px;">AES‑RSA</div>
-        <div class="stat-label">Encryption Level</div>
+    <div class="sb-user">
+      <div class="sb-avatar" id="sbAvatar">U</div>
+      <div>
+        <div class="sb-name" id="sbName">User</div>
+        <div class="sb-email" id="sbEmail">—</div>
       </div>
     </div>
-  </div>
 
-  <!-- VIEW: UPLOAD FILES -->
-  <div class="tab-content" id="viewUpload" style="display: none;">
-    <section class="card" id="uploadSection">
-      <div class="card-title"><span>☁️</span> Upload Encrypted File</div>
-      <div class="upload-zone" id="uploadZone">
-        <div class="uz-icon">⬆️</div>
-        <h3>Drag &amp; drop or click to select</h3>
-        <p>Files are encrypted client-side using Hybrid AES-RSA before upload</p>
-        <div class="type-badges">
-          <span class="badge">📝 Text</span>
-          <span class="badge">🖼️ Image</span>
-          <span class="badge">🎵 Audio</span>
-          <span class="badge">🎬 Video</span>
-          <span class="badge">📄 PDF</span>
+    <div class="sb-nav">
+      <a href="#" class="active" id="navDash">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="#" id="navUpload">
+        <span class="nav-icon">☁️</span> Upload Files
+      </a>
+      <a href="#" id="navFiles">
+        <span class="nav-icon">📁</span> My Files
+      </a>
+      <a href="#" id="navSecurity">
+        <span class="nav-icon">🛡️</span> Security
+      </a>
+      <a href="#" id="navSettings">
+        <span class="nav-icon">⚙️</span> Settings
+      </a>
+    </div>
+
+    <div class="sb-bottom">
+      <a href="/module/auth/login.html" id="logoutBtn">
+        <span>🚪</span> Sign Out
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ══════════════════════════════════════ -->
+  <main id="main">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <button id="menuToggle"
+        style="display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;margin-bottom:12px;">☰</button>
+      <h1>Welcome back, <span id="greetName" style="color:#00D4FF;">User</span> 👋</h1>
+      <p>Your files are encrypted and secured with AES-256 + RSA-4096.</p>
+    </div>
+
+    <!-- VIEW: DASHBOARD OVERVIEW -->
+    <div class="tab-content active" id="viewDash">
+
+      <!-- ── Account Profile ───────────────────────────── -->
+      <div class="card"
+        style="margin-bottom: 30px; display: flex; align-items: center; gap: 20px; padding: 25px 30px; border-radius: 16px; background: rgba(15,22,41,0.85); border: 1px solid rgba(0,212,255,0.2);">
+        <div id="profileAvatar"
+          style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);">
+          U</div>
+        <div>
+          <div
+            style="font-size: 13px; color: var(--cyan); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 5px;">
+            Authenticated User</div>
+          <div id="profileName" style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 4px;">User</div>
+          <div id="profileEmail" style="font-size: 15px; color: var(--muted);">—</div>
         </div>
-        <input type="file" id="fileInput" multiple accept="*/*"/>
       </div>
-      <div class="progress-bar" id="progressBar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </section>
-  </div>
 
-  <!-- VIEW: MY FILES -->
-  <div class="tab-content" id="viewFiles" style="display: none;">
-    <section class="card" id="fileSection">
-      <div class="card-title"><span>📁</span> My Encrypted Files</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>File Name</th>
-              <th>Size</th>
-              <th>Uploaded</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="fileBody"></tbody>
-        </table>
-      </div>
-      <div class="empty-state" id="emptyState">
-        <div class="empty-icon">📭</div>
-        <p>No files yet. Upload your first file in the Upload tab!</p>
-      </div>
-    </section>
-  </div>
-
-  <!-- VIEW: SECURITY -->
-  <div class="tab-content" id="viewSecurity" style="display: none;">
-    <section class="card">
-      <div class="card-title"><span>🛡️</span> Zero-Knowledge Security Architecture</div>
-      <div style="padding: 20px;">
-        <p style="margin-bottom:15px; color:#a0a0b0;">Your data is secured using a mathematically provable Zero-Knowledge architecture combining AES-256-GCM and RSA-4096. ZINO servers never see your plain-text data or private key.</p>
-        
-        <div style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.2); padding:20px; border-radius:12px; margin-bottom:20px;">
-          <h3 style="color:#00D4FF; margin-bottom:10px;">Your RSA Public Key</h3>
-          <p style="font-size:12px; color:#888; font-family:monospace; word-break:break-all;" id="pubKeyDisplay">Loading key...</p>
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📂</div>
+          <div class="stat-value" id="statFiles">0</div>
+          <div class="stat-label">Total Files</div>
         </div>
-
-        <button class="btn btn-primary" onclick="alert('In production, this will invalidate your old files. Are you sure?')">Regenerate Cryptographic Keys</button>
+        <div class="stat-card">
+          <div class="stat-icon">💾</div>
+          <div class="stat-value" id="statStorage">0 B</div>
+          <div class="stat-label">Storage Used</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🕐</div>
+          <div class="stat-value" style="font-size:16px;" id="statLast">—</div>
+          <div class="stat-label">Last Upload</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔐</div>
+          <div class="stat-value" style="font-size:18px;">AES‑RSA</div>
+          <div class="stat-label">Encryption Level</div>
+        </div>
       </div>
-    </section>
-  </div>
+    </div>
 
-  <!-- VIEW: SETTINGS -->
-  <div class="tab-content" id="viewSettings" style="display: none;">
-    <section class="card">
-      <div class="card-title"><span>⚙️</span> Account Settings</div>
-      <div style="padding: 20px;">
-        <label class="input-label">Email Address</label>
-        <input type="text" class="input-field" id="settingEmail" readonly disabled style="margin-bottom:15px; opacity:0.7;">
-        
-        <label class="input-label">Display Name</label>
-        <input type="text" class="input-field" id="settingName" placeholder="Update your name..." style="margin-bottom:15px;">
+    <!-- VIEW: UPLOAD FILES -->
+    <div class="tab-content" id="viewUpload" style="display: none;">
+      <section class="card" id="uploadSection">
+        <div class="card-title"><span>☁️</span> Upload Encrypted File</div>
+        <div class="upload-zone" id="uploadZone">
+          <div class="uz-icon">⬆️</div>
+          <h3>Drag &amp; drop or click to select</h3>
+          <p>Files are encrypted client-side using Hybrid AES-RSA before upload</p>
+          <div class="type-badges">
+            <span class="badge">📝 Text</span>
+            <span class="badge">🖼️ Image</span>
+            <span class="badge">🎵 Audio</span>
+            <span class="badge">🎬 Video</span>
+            <span class="badge">📄 PDF</span>
+          </div>
+          <input type="file" id="fileInput" multiple accept="*/*" />
+        </div>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </section>
+    </div>
 
-        <button class="btn btn-primary" onclick="toast('Settings saved successfully', 'success')">Save Changes</button>
+    <!-- VIEW: MY FILES -->
+    <div class="tab-content" id="viewFiles" style="display: none;">
+      <section class="card" id="fileSection">
+        <div class="card-title"><span>📁</span> My Encrypted Files</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Size</th>
+                <th>Uploaded</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="fileBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">📭</div>
+          <p>No files yet. Upload your first file in the Upload tab!</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW: SECURITY -->
+    <div class="tab-content" id="viewSecurity" style="display: none;">
+      
+      <!-- ── Educational Security Cards ────────────────────────── -->
+      <div class="card">
+        <div class="card-title" style="display:flex; align-items:flex-start; gap:15px; margin-bottom:20px;">
+          <span class="card-icon"
+            style="font-size:24px; background:rgba(0,212,255,0.1); padding:12px; border-radius:12px;">🔒</span>
+          <div>
+            <div style="font-size:18px; font-weight:700; color:#fff; margin-bottom:5px;">How Your Files Are Protected
+            </div>
+            <div style="font-size:14px; color:var(--muted);">Understanding our military-grade security model.</div>
+          </div>
+        </div>
+        <div style="padding: 0 10px; color: var(--muted); line-height: 1.8;">
+          <p style="margin-bottom: 15px;">When you upload a file to Famous Storage, your browser instantly generates a
+            unique <strong>256-bit AES encryption key</strong>. Your file is then locked (encrypted) using this key
+            <em>before</em> it ever leaves your device.</p>
+          <p style="margin-bottom: 15px;">We only store the locked, scrambled version of your file on our servers. The
+            unique key used to lock it is downloaded straight to your computer as a <code>.txt</code> file.</p>
+          <p>Because we never receive your key, <strong>it is mathematically impossible for anyone at Famous Storage (or
+              any hackers who breach our servers) to view your files.</strong></p>
+        </div>
       </div>
-    </section>
-  </div>
 
-</main>
+      <div class="card danger-card" style="margin-top: 30px; border-color: rgba(255, 68, 68, 0.3);">
+        <div class="card-title" style="display:flex; align-items:flex-start; gap:15px; margin-bottom:20px;">
+          <span class="card-icon"
+            style="font-size:24px; background:rgba(255,68,68,0.1); padding:12px; border-radius:12px;">⚠️</span>
+          <div>
+            <div style="font-size:18px; font-weight:700; color:#ff4444; margin-bottom:5px;">What You MUST Keep Secret
+            </div>
+            <div style="font-size:14px; color:var(--muted);">Crucial instructions for maintaining your privacy.</div>
+          </div>
+        </div>
+        <div
+          style="background: rgba(255, 68, 68, 0.05); border: 1px solid rgba(255, 68, 68, 0.2); border-radius: 12px; padding: 20px; color: #fff; line-height: 1.6;">
+          <ul style="margin-left: 20px; list-style-type: square;">
+            <li style="margin-bottom: 10px;"><strong>The Downloaded Key Files:</strong> Every time you upload or share a
+              file, you receive an AES decryption key. <strong>Do NOT share this key publicly</strong> unless you want
+              the world to be able to decrypt and view that specific file.</li>
+            <li style="margin-bottom: 10px;"><strong>If you lose a key:</strong> Because we do not store your keys, if
+              you lose the key file for an encrypted document, that document is lost forever. We cannot recover it for
+              you.</li>
+            <li><strong>Sharing Links:</strong> Only send your files and decryption keys to trusted individuals via
+              secure, private channels.</li>
+          </ul>
+        </div>
+      </div>
 
-<!-- ═══ DECRYPT MODAL ═════════════════════════════════════ -->
-<div class="modal-overlay" id="decryptModal">
-  <div class="modal-box">
-    <button class="modal-close" id="closeDecryptModal">&times;</button>
-    <h2>🔓 Decrypt File</h2>
-    <p>Paste your RSA private key to decrypt <strong id="decryptFileName" style="color:#00D4FF;"></strong>.</p>
-    <label class="input-label" for="privateKeyInput">YOUR PRIVATE KEY (.PEM)</label>
-    <textarea class="key-input" id="privateKeyInput" placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;...&#10;-----END RSA PRIVATE KEY-----"></textarea>
-    <div class="modal-actions">
-      <button class="btn btn-primary" id="decryptBtn">🔓 Decrypt &amp; Download</button>
-      <button class="btn btn-ghost" id="closeDecryptModal2" onclick="document.getElementById('decryptModal').classList.remove('active')">Cancel</button>
+    </div>
+
+    <!-- VIEW: SETTINGS -->
+    <div class="tab-content" id="viewSettings" style="display: none;">
+      <section class="card">
+        <div class="card-title"><span>⚙️</span> Account Settings</div>
+        <div style="padding: 20px;">
+          <label class="input-label">Email Address</label>
+          <input type="text" class="input-field" id="settingEmail" readonly disabled
+            style="margin-bottom:15px; opacity:0.7;">
+
+          <label class="input-label">Display Name</label>
+          <input type="text" class="input-field" id="settingName" placeholder="Update your name..."
+            style="margin-bottom:15px;">
+
+          <button class="btn btn-primary" onclick="toast('Settings saved successfully', 'success')">Save
+            Changes</button>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+
+
+  <!-- ═══ FILE PREVIEW MODAL ═══════════════════════════════════ -->
+  <div class="modal-overlay" id="dashPreviewModal" style="z-index:1100;"
+    onclick="if(event.target===this)closeFilePreview()">
+    <div
+      style="background:#0a0f1e;border:1px solid rgba(0,212,255,0.2);border-radius:20px;max-width:860px;width:94%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 100px rgba(0,0,0,0.8);">
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(0,71,255,0.2);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:20px;">🔓</span>
+          <div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#7986a8;">DECRYPTED FILE</div>
+            <div id="dashPreviewTitle"
+              style="font-size:14px;font-weight:700;color:#e8eaf6;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-ghost" style="padding:0.35rem 0.9rem;font-size:0.8rem;"
+            onclick="downloadFilePreview()">⬇️ Download</button>
+          <button
+            style="background:rgba(255,255,255,0.08);border:none;color:#e8eaf6;font-size:20px;width:34px;height:34px;border-radius:50%;cursor:pointer;"
+            onclick="closeFilePreview()">&times;</button>
+        </div>
+      </div>
+      <div id="dashPreviewBody" style="padding:24px;overflow-y:auto;flex:1;"></div>
     </div>
   </div>
-</div>
 
-<!-- ═══ TOAST CONTAINER ═══════════════════════════════════ -->
-<div id="toast"></div>
+  <!-- ═══ TOAST CONTAINER ═══════════════════════════════════ -->
+  <div id="toast"></div>
 
-<script src="dashboard.js"></script>
+  <script src="dashboard.js"></script>
 </body>
+
 </html>

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>ZINO — Settings</title>
-  <meta name="description" content="Manage your ZINO account profile, preferences, and security settings."/>
+  <title>Famous Storage — Settings</title>
+  <meta name="description" content="Manage your Famous Storage account profile, preferences, and security settings."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -104,7 +104,7 @@
               <span class="input-icon">🏷️</span>
               <input type="text" id="inputUsername" class="form-input" placeholder="e.g. john_doe"/>
             </div>
-            <div class="form-hint">Your unique identifier on the ZINO platform.</div>
+            <div class="form-hint">Your unique identifier on the Famous Storage platform.</div>
           </div>
 
           <div class="form-actions">
@@ -199,8 +199,8 @@
           </div>
         </div>
         <div class="danger-body">
-          <p class="danger-desc">Signing out will clear your session. Your encrypted files remain safe on ZINO servers.</p>
-          <button class="btn btn-signout" onclick="confirmSignOut()">🚪 Sign Out of ZINO</button>
+          <p class="danger-desc">Signing out will clear your session. Your encrypted files remain safe on Famous Storage servers.</p>
+          <button class="btn btn-signout" onclick="confirmSignOut()">🚪 Sign Out of Famous Storage</button>
 
           <div class="form-divider" style="margin: 16px 0;"></div>
 
@@ -221,7 +221,7 @@
   <div class="confirm-modal">
     <div class="modal-icon">🚪</div>
     <h2>Sign Out?</h2>
-    <p>You will be redirected to the login page. Your encrypted files remain stored safely on ZINO.</p>
+    <p>You will be redirected to the login page. Your encrypted files remain stored safely on Famous Storage.</p>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('signOutBackdrop')">Cancel</button>
       <button class="btn btn-signout" onclick="signOut()">Sign Out</button>
@@ -236,7 +236,7 @@
   <div class="confirm-modal">
     <div class="modal-icon">⚠️</div>
     <h2>Delete Account?</h2>
-    <p>This will <strong>permanently delete</strong> your account and all your encrypted files from ZINO. This action is <strong>irreversible</strong>.</p>
+    <p>This will <strong>permanently delete</strong> your account and all your encrypted files from Famous Storage. This action is <strong>irreversible</strong>.</p>
     <div class="form-group" style="margin-top: 16px;">
       <label class="form-label">Type your email to confirm</label>
       <input type="email" id="deleteConfirmEmail" class="form-input" placeholder="your@email.com"/>
@@ -254,3 +254,4 @@
 <script src="settings.js"></script>
 </body>
 </html>
+

@@ -4,14 +4,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>ZINO — My Files</title>
+  <title>Famous Storage — My Files</title>
   <meta name="description"
-    content="View, decrypt, verify, and manage your encrypted files on the ZINO secure cloud platform." />
+    content="View, decrypt, verify, and manage your encrypted files on the Famous Storage secure cloud platform." />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="myfile.css" />
+  <link rel="stylesheet" href="myfile.v2.css" />
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- Supabase Client Setup -->
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://xjsoxlfsojlsoafpovht.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqc294bGZzb2psc29hZnBvdmh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTE0OTAsImV4cCI6MjA5Mzc4NzQ5MH0.GUaXto93eAHc-obMnODuanfbgydr1B7xpmNCGPrVOcA';
+
+      var _supabase = null;
+      function getClient() {
+        if (!_supabase) {
+          if (!window.supabase || !window.supabase.createClient) {
+            throw new Error('Supabase SDK failed to load. Check your internet connection.');
+          }
+          _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        return _supabase;
+      }
+      
+      window.getSupabaseClient = getClient;
+    })();
+  </script>
 </head>
 
 <body>
@@ -19,7 +46,7 @@
   <!-- ═══ SIDEBAR ══════════════════════════════════════════════ -->
   <nav id="sidebar">
     <div class="sb-logo">
-      <div class="logo-text">Z<span>I</span>NO</div>
+      <div class="logo-text">Famo<span>us</span> Cloud</div>
       <div class="logo-sub">Cloud Platform</div>
     </div>
 
@@ -64,7 +91,7 @@
       <div class="header-badge">🔐 ZERO-KNOWLEDGE STORAGE</div>
       <h1>My <span class="grad-text">Encrypted Files</span></h1>
       <p>All files are stored as encrypted cipher-blobs. Only your <strong>RSA Private Key</strong> can decrypt them —
-        not even ZINO can read your files.</p>
+        not even Famous Storage can read your files.</p>
     </div>
 
     <!-- ── Toolbar ─────────────────────────────────────────── -->
@@ -108,69 +135,7 @@
 
   </main>
 
-  <!-- ════════════════════════════════════════════════════════════
-     DECRYPT MODAL — RSA Private Key Slide-Up
-     ════════════════════════════════════════════════════════════ -->
-  <div class="modal-backdrop" id="decryptBackdrop">
-    <div class="modal-sheet" id="decryptSheet">
-      <div class="sheet-handle"></div>
 
-      <div class="sheet-header">
-        <div class="sheet-title">
-          <span class="sheet-icon">🔓</span>
-          <div>
-            <div class="sheet-heading">Decrypt &amp; Download</div>
-            <div class="sheet-filename" id="sheetFilename">file.txt</div>
-          </div>
-        </div>
-        <button class="sheet-close" id="closeSheet">&times;</button>
-      </div>
-
-      <div class="sheet-body">
-        <div class="key-info-box">
-          <div class="key-info-icon">🔑</div>
-          <div>
-            <div class="key-info-title">Your RSA Private Key Required</div>
-            <div class="key-info-sub">Your private key (.pem) was downloaded when you registered. It never leaves your
-              device.</div>
-          </div>
-        </div>
-
-        <label class="input-label" for="privateKeyInput">PASTE YOUR RSA PRIVATE KEY (.PEM)</label>
-        <textarea id="privateKeyInput" class="key-textarea"
-          placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;MIIEowIBAAKCAQEA...&#10;...&#10;-----END RSA PRIVATE KEY-----"
-          spellcheck="false"></textarea>
-
-        <div class="key-validation" id="keyValidation"></div>
-
-        <div class="dec-steps">
-          <div class="dec-step" id="dStep1">
-            <span class="dec-dot"></span>
-            <span>Unwrap AES key using RSA-4096 OAEP</span>
-          </div>
-          <div class="dec-step" id="dStep2">
-            <span class="dec-dot"></span>
-            <span>Fetch encrypted file from Supabase Storage</span>
-          </div>
-          <div class="dec-step" id="dStep3">
-            <span class="dec-dot"></span>
-            <span>Decrypt cipher-blob using AES-256-GCM</span>
-          </div>
-          <div class="dec-step" id="dStep4">
-            <span class="dec-dot"></span>
-            <span>Deliver plain-text file to your browser</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="sheet-footer">
-        <button class="btn btn-ghost" id="cancelDecrypt">Cancel</button>
-        <button class="btn btn-primary" id="confirmDecrypt">
-          <span id="decryptBtnLabel">🔓 Decrypt &amp; Download</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- ════════════════════════════════════════════════════════════
      VERIFY MODAL — SHA-256 Integrity Check
@@ -202,7 +167,7 @@
     <div class="delete-modal">
       <div class="delete-icon">🗑️</div>
       <h2>Delete File?</h2>
-      <p>This will permanently remove <strong id="deleteFileName"></strong> from ZINO Storage. This action cannot be
+      <p>This will permanently remove <strong id="deleteFileName"></strong> from Famous Storage. This action cannot be
         undone.</p>
       <div class="delete-actions">
         <button class="btn btn-ghost" id="cancelDelete">Cancel</button>
@@ -211,10 +176,34 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════════════════════
+     FILE PREVIEW MODAL
+     ════════════════════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="previewBackdrop" style="align-items:center;justify-content:center;">
+    <div style="background:#0a0f1e;border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:0;max-width:860px;width:94%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 100px rgba(0,0,0,0.7);">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(0,71,255,0.2);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:22px;">🔓</span>
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#7986a8;margin-bottom:2px;">DECRYPTED FILE</div>
+            <div id="previewTitle" style="font-size:15px;font-weight:700;color:#e8eaf6;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="btn btn-ghost" style="padding:0.4rem 1rem;font-size:0.82rem;" onclick="downloadPreview()">⬇️ Download</button>
+          <button class="sheet-close" onclick="closePreview()">&times;</button>
+        </div>
+      </div>
+      <!-- Body -->
+      <div id="previewBody" style="padding:24px;overflow-y:auto;flex:1;"></div>
+    </div>
+  </div>
+
   <!-- ═══ TOAST ════════════════════════════════════════════════ -->
   <div id="toast"></div>
 
-  <script src="myfile.js"></script>
+  <script src="myfile.v2.js"></script>
 </body>
 
 </html>

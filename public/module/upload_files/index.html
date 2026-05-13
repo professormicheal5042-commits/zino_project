@@ -1,14 +1,38 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>ZINO — Upload Files</title>
+  <title>Famous Storage — Upload Files</title>
   <meta name="description" content="Securely upload and encrypt files using client-side Hybrid AES-256-GCM + RSA-4096 encryption."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="upload.css"/>
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- Supabase Client Setup -->
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://xjsoxlfsojlsoafpovht.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqc294bGZzb2psc29hZnBvdmh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTE0OTAsImV4cCI6MjA5Mzc4NzQ5MH0.GUaXto93eAHc-obMnODuanfbgydr1B7xpmNCGPrVOcA';
+
+      var _supabase = null;
+      function getClient() {
+        if (!_supabase) {
+          if (!window.supabase || !window.supabase.createClient) {
+            throw new Error('Supabase SDK failed to load. Check your internet connection.');
+          }
+          _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        return _supabase;
+      }
+      
+      window.getSupabaseClient = getClient;
+    })();
+  </script>
 </head>
 <body>
 
@@ -59,7 +83,7 @@
   <div class="page-header">
     <div class="header-badge">🔐 CLIENT-SIDE ENCRYPTION</div>
     <h1>Upload <span class="grad-text">Encrypted Files</span></h1>
-    <p>Files are encrypted in your browser using <strong>Hybrid AES-256-GCM + RSA-4096</strong> before leaving your device. ZINO servers never see your raw data.</p>
+    <p>Files are encrypted in your browser using <strong>Hybrid AES-256-GCM + RSA-4096</strong> before leaving your device. Famous Storage servers never see your raw data.</p>
   </div>
 
   <!-- ── Drop Zone ─────────────────────────────────────────── -->
@@ -128,7 +152,7 @@
         <div class="step-dot"></div>
         <div class="step-body">
           <div class="step-title">Step D — Secure Upload</div>
-          <div class="step-desc">Uploading encrypted cipher-blob to ZINO Secure Storage...</div>
+          <div class="step-desc">Uploading encrypted cipher-blob to Famous Storage Secure Storage...</div>
           <div class="step-code" id="uploadPreview">Waiting...</div>
         </div>
       </div>
@@ -150,6 +174,10 @@
       <span id="queueCount">0 files</span>
     </div>
     <div class="queue-list" id="queueList"></div>
+    <div class="queue-actions" id="queueActions" style="margin-top: 20px; display: none; justify-content: flex-end; gap: 10px;">
+      <button class="btn btn-ghost" onclick="resetUpload()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAndUpload()">🚀 Confirm &amp; Upload</button>
+    </div>
   </div>
 
   <!-- ── Success Panel ─────────────────────────────────────── -->
@@ -158,7 +186,7 @@
     <h2>All Files Encrypted &amp; Uploaded</h2>
     <p>Your files are now stored as encrypted cipher-blobs. Only your RSA Private Key can decrypt them.</p>
     <div class="success-actions">
-      <a href="../my_files/index.html" class="btn btn-primary">📁 View My Files</a>
+      <a href="../my_file/index.html" class="btn btn-primary">📁 View My Files</a>
       <button class="btn btn-ghost" onclick="resetUpload()">⬆️ Upload More</button>
     </div>
   </div>
@@ -171,3 +199,4 @@
 <script src="upload.js"></script>
 </body>
 </html>
+

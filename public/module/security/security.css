@@ -1,5 +1,5 @@
-/* ══════════════════════════════════════════════════════════
-   ZINO — Security CSS
+﻿/* ══════════════════════════════════════════════════════════
+   Famous Storage — Security CSS
    ══════════════════════════════════════════════════════════ */
 
 :root {
@@ -310,3 +310,4 @@ body::before {
   .terminology-grid { grid-template-columns: 1fr; }
   .status-divider { display: none; }
 }
+

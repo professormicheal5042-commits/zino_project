@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "zino-cloud-ng"
-  }
+    "default": "famous-storage"
+  },
+  "targets": {},
+  "etags": {}
 }

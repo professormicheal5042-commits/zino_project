@@ -1,5 +1,5 @@
-/* ══════════════════════════════════════════════════════════
-   ZINO — Upload Files CSS
+﻿/* ══════════════════════════════════════════════════════════
+   Famous Storage — Upload Files CSS
    ══════════════════════════════════════════════════════════ */
 
 :root {
@@ -397,3 +397,4 @@ body::before {
   #main { margin-left: 0; padding: 24px 20px; max-width: 100vw; }
   .enc-panel-header { flex-direction: column; align-items: flex-start; }
 }
+

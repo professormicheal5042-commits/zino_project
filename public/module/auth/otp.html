@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZINO — Verify Your Identity</title>
-  <meta name="description" content="Enter your 6-digit OTP to verify your ZINO account." />
+  <title>Famous Storage — Verify Your Identity</title>
+  <meta name="description" content="Enter your 6-digit OTP to verify your Famous Storage account." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
@@ -621,7 +621,7 @@
 
     .provision-step i {
       color: var(--cyan);
-      font-style: normal;
+      font-style: famousStorageEmail;
       font-weight: 800;
     }
 
@@ -711,7 +711,7 @@
     <div class="card-top-line"></div>
 
     <!-- LOGO -->
-    <div class="logo">ZINO</div>
+    <div class="logo">Famous Storage</div>
 
     <!-- MAIN CONTENT (shown initially) -->
     <div id="mainContent">
@@ -824,7 +824,7 @@
     })();
 
     /* ─── LOAD EMAIL FROM sessionStorage ─── */
-    const savedEmail = sessionStorage.getItem('zinoEmail') || '';
+    const savedEmail = sessionStorage.getItem('famousStorageEmail') || '';
     if (savedEmail) {
       const [user, domain] = savedEmail.split('@');
       const masked = user.charAt(0) + '***' + (user.length > 2 ? user.charAt(user.length - 1) : '') + '@' + domain;
@@ -947,8 +947,8 @@
       btnText.innerHTML = '<span class="spinner"></span>Verifying...';
       hideStatus();
 
-      const email = sessionStorage.getItem('zinoEmail');
-      const flow = sessionStorage.getItem('zinoFlow') || 'signup'; // 'login' or 'register'
+      const email = sessionStorage.getItem('famousStorageEmail');
+      const flow = sessionStorage.getItem('famousStorageFlow') || 'signup'; // 'login' or 'register'
 
       try {
         // Call Supabase Authentication
@@ -985,8 +985,8 @@
     /* ─── RESEND CODE (real Supabase resend) ─── */
     async function resendCode() {
       const rb = document.getElementById('resendBtn');
-      const email = sessionStorage.getItem('zinoEmail');
-      const flow = sessionStorage.getItem('zinoFlow') || 'register';
+      const email = sessionStorage.getItem('famousStorageEmail');
+      const flow = sessionStorage.getItem('famousStorageFlow') || 'register';
 
       if (!email) {
         showStatus('Session lost. Please go back and sign up again.', 'error');
@@ -1098,7 +1098,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'zino_private_access.key';
+      a.download = 'Famous Storage_private_access.key';
       a.click();
       URL.revokeObjectURL(url);
     }

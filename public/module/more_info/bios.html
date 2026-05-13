@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Famous Storage — About the Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue:    #0047FF;
+      --cyan:    #00D4FF;
+      --dark:    #050812;
+      --card:    rgba(15,22,41,0.85);
+      --border2: rgba(0,212,255,0.2);
+      --text:    #e8eaf6;
+      --muted:   #7986a8;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,71,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,71,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orb-drift 8s ease-in-out infinite alternate;
+    }
+    .glow-orb-1 { width: 400px; height: 400px; background: rgba(0,71,255,0.12); top: -100px; left: -100px; }
+    .glow-orb-2 { width: 300px; height: 300px; background: rgba(0,212,255,0.08); bottom: -80px; right: -80px; animation-delay: -4s; }
+    @keyframes orb-drift { from { transform: translate(0,0); } to { transform: translate(30px, 20px); } }
+
+    .nav-back {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+      background: rgba(255,255,255,0.05);
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s;
+    }
+    .nav-back:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px rgba(0,212,255,0.2);
+    }
+
+    .profile-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 950px;
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: 28px;
+      backdrop-filter: blur(30px);
+      box-shadow:
+        0 0 0 1px rgba(0,212,255,0.05),
+        0 30px 80px rgba(0,0,0,0.6),
+        0 0 80px rgba(0,71,255,0.06) inset;
+      text-align: left;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .profile-image-wrap {
+      flex: 0 0 40%;
+      min-height: 500px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      position: relative;
+      border-right: 2px solid var(--border2);
+    }
+
+    .profile-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      background: #0a0f1e;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    .profile-content {
+      flex: 1;
+      padding: 45px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .role-badge {
+      display: inline-block;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.25);
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .profile-name {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .profile-title {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 35px;
+      font-weight: 500;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      text-align: left;
+      margin-top: 30px;
+    }
+
+    .info-card {
+      background: rgba(0,212,255,0.03);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .info-card:hover {
+      background: rgba(0,212,255,0.06);
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .info-card:hover::before { opacity: 1; }
+
+    .info-icon {
+      font-size: 26px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .info-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .info-value {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .bio-text {
+      margin-top: 35px;
+      padding-top: 25px;
+      border-top: 1px dashed rgba(0,212,255,0.2);
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+      text-align: left;
+    }
+
+    @media (max-width: 850px) {
+      .profile-card { flex-direction: column; }
+      .profile-image-wrap { flex: none; height: 350px; border-right: none; border-bottom: 2px solid var(--border2); }
+      .profile-image { position: relative; }
+      .profile-content { padding: 35px 30px; text-align: center; }
+      .bio-text { text-align: center; }
+      .nav-back { top: 20px; left: 20px; font-size: 14px; padding: 8px 16px; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
+    }
+    
+    @media (max-width: 500px) {
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <a href="../../index.html" class="nav-back">
+    <span>←</span> Back to Home
+  </a>
+
+  <div class="profile-card">
+    <div class="profile-image-wrap">
+      <img src="../../assets/images/famous.jpg" alt="Okpoko Oghenekaro Famous" class="profile-image" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%230a0f1e\'/><text x=\'50\' y=\'55\' font-family=\'Arial\' font-size=\'40\' fill=\'%2300D4FF\' text-anchor=\'middle\' dominant-baseline=\'middle\'>OF</text></svg>'">
+    </div>
+    
+    <div class="profile-content">
+      <div>
+        <div class="role-badge">Lead Developer & Visionary</div>
+        <h1 class="profile-name">Okpoko Oghenekaro Famous</h1>
+        <div class="profile-title">Software Engineer & Cloud Architect</div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-icon">🎓</span>
+          <div class="info-label">University</div>
+          <div class="info-value">University of Southern Delta</div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📚</span>
+          <div class="info-label">Academic Level</div>
+          <div class="info-value">400 Level</div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🏛️</span>
+          <div class="info-label">Faculty</div>
+          <div class="info-value">Faculty of Computing</div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">💻</span>
+          <div class="info-label">Department</div>
+          <div class="info-value">Computer Science</div>
+        </div>
+      </div>
+
+      <div class="bio-text">
+        Passionate about building scalable, secure, and performant cloud architectures. The Famous Storage platform is a culmination of advanced cryptographic principles and modern web engineering, designed to provide zero-knowledge security and seamless user experiences at scale. 
+      </div>
+    </div>
+  </div>
+</body>
+</html>

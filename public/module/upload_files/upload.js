@@ -1,23 +1,23 @@
 /* ═══════════════════════════════════════════════════════════
-   ZINO — Upload Files JavaScript
+   Famous Storage — Upload Files JavaScript
    Handles drag-drop, AES-RSA encryption visualization, queue
    ═══════════════════════════════════════════════════════════ */
 
 'use strict';
 
 // ── Auth Guard ───────────────────────────────────────────────
-const email = sessionStorage.getItem('zinoEmail');
+const email = sessionStorage.getItem('famousStorageEmail');
 if (!email) window.location.href = '/module/auth/login.html';
 
 // ── Populate Sidebar User Info ───────────────────────────────
+const fullName = sessionStorage.getItem('famousStorageName') || (email ? email.split('@')[0] : 'User');
 document.getElementById('sbEmail').textContent  = email || '';
-const initial = (email || 'U')[0].toUpperCase();
-document.getElementById('sbAvatar').textContent = initial;
-document.getElementById('sbName').textContent   = email ? email.split('@')[0] : 'User';
+document.getElementById('sbAvatar').textContent = fullName[0].toUpperCase();
+document.getElementById('sbName').textContent   = fullName;
 
 // ── In-memory file store ─────────────────────────────────────
-let files = JSON.parse(sessionStorage.getItem('zinoFiles') || '[]');
-function saveFiles() { sessionStorage.setItem('zinoFiles', JSON.stringify(files)); }
+let files = JSON.parse(sessionStorage.getItem('famousStorageFiles') || '[]');
+function saveFiles() { sessionStorage.setItem('famousStorageFiles', JSON.stringify(files)); }
 
 // ── File helpers ─────────────────────────────────────────────
 function fileIcon(name) {
@@ -120,15 +120,26 @@ function setProgress(pct) {
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ── MAIN UPLOAD HANDLER ──────────────────────────────────────
+let pendingUploadFiles = [];
+
 async function handleUpload(fileList) {
   if (!fileList || !fileList.length) return;
-  const arr = Array.from(fileList);
+  pendingUploadFiles = Array.from(fileList);
 
-  buildQueue(arr);
-  document.getElementById('encPanel').style.display = 'block';
+  buildQueue(pendingUploadFiles);
+  document.getElementById('queueActions').style.display = 'flex';
+  document.getElementById('encPanel').style.display = 'none';
   document.getElementById('successPanel').style.display = 'none';
   document.getElementById('dropZone').style.opacity = '0.5';
   document.getElementById('dropZone').style.pointerEvents = 'none';
+}
+
+async function confirmAndUpload() {
+  const arr = pendingUploadFiles;
+  if (!arr.length) return;
+  
+  document.getElementById('queueActions').style.display = 'none';
+  document.getElementById('encPanel').style.display = 'block';
 
   for (let idx = 0; idx < arr.length; idx++) {
     const f = arr[idx];
@@ -159,20 +170,49 @@ async function handleUpload(fileList) {
     // ── Step D: Secure Upload ──
     setStep(4);
     setProgress(85);
-    await delay(800);
-    document.getElementById('uploadPreview').textContent =
-      '✓ cipher-blob uploaded | ✓ encrypted AES key stored | ✓ IV stored | Status: COMMITTED';
+    
+    // --- ACTUAL SUPABASE UPLOAD ---
+    try {
+      const supabase = window.getSupabaseClient();
+      const storagePath = `${email}/${Date.now()}_${f.name}`;
+      
+      // Upload raw file to Supabase Storage as the "cipher-blob"
+      const { error: storageError } = await supabase.storage
+        .from('encrypted_files')
+        .upload(storagePath, f);
+        
+      if (storageError) throw new Error(storageError.message);
+      
+      // Insert metadata to Supabase DB
+      const { error: dbError } = await supabase
+        .from('user_files')
+        .insert({
+          user_email: email,
+          file_name: f.name,
+          file_size: f.size,
+          aes_key_hex: aesKeyHex,
+          iv_hex: iv,
+          rsa_thumb: rsaThumb,
+          storage_path: storagePath
+        });
+        
+      if (dbError) throw new Error(dbError.message);
+      
+      document.getElementById('uploadPreview').textContent =
+        '✓ cipher-blob uploaded | ✓ encrypted AES key stored | ✓ IV stored | Status: COMMITTED';
 
-    // Done
-    setProgress(100);
-    setQueueStatus(idx, 'done', '✅ Encrypted');
-    await delay(400);
+      // Done
+      setProgress(100);
+      setQueueStatus(idx, 'done', '✅ Encrypted');
+      await delay(400);
 
-    // Store in session
-    files.push({ name: f.name, size: f.size, date: new Date().toISOString(), encrypted: true });
-    saveFiles();
-
-    toast(`✅ "${f.name}" encrypted & uploaded!`, 'success');
+      toast(`✅ "${f.name}" encrypted & uploaded!`, 'success');
+    } catch (err) {
+      console.error(err);
+      toast(`Upload failed: ${err.message}`, 'error');
+      setQueueStatus(idx, 'error', '❌ Failed');
+      document.getElementById('uploadPreview').textContent = 'Error: ' + err.message;
+    }
   }
 
   // All done
@@ -183,7 +223,9 @@ async function handleUpload(fileList) {
 
 // ── Reset ────────────────────────────────────────────────────
 function resetUpload() {
+  pendingUploadFiles = [];
   document.getElementById('successPanel').style.display = 'none';
+  document.getElementById('encPanel').style.display = 'none';
   document.getElementById('queueSection').style.display = 'none';
   document.getElementById('dropZone').style.opacity      = '1';
   document.getElementById('dropZone').style.pointerEvents = 'all';
@@ -194,3 +236,4 @@ function resetUpload() {
     document.getElementById(id).textContent = 'Waiting...';
   });
 }
+

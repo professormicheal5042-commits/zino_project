@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>ZINO — Security</title>
-  <meta name="description" content="Manage your cryptographic keys and review the Zero-Knowledge security architecture powering ZINO."/>
+  <title>Famous Storage — Security</title>
+  <meta name="description" content="Manage your cryptographic keys and review the Zero-Knowledge security architecture powering Famous Storage."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -43,203 +43,81 @@
 
   <!-- Page Header -->
   <div class="page-header">
-    <div class="header-badge">🔐 CRYPTOGRAPHIC KEY MANAGEMENT</div>
-    <h1>Security <span class="grad-text">Centre</span></h1>
-    <p>Your encryption keys and Zero-Knowledge architecture overview. All cryptographic operations occur exclusively in your browser using the <strong>Web Crypto API</strong>.</p>
+    <div class="header-badge">🛡️ YOUR DATA IS SECURE</div>
+    <h1>Security & <span class="grad-text">Privacy</span></h1>
+    <p>Famous Storage is built on a <strong>Zero-Knowledge Architecture</strong>. This means we cannot see, access, or decrypt your files. You are in complete control.</p>
   </div>
 
   <!-- ── Security Status Bar ──────────────────────────────── -->
   <div class="status-bar">
     <div class="status-item">
       <div class="status-dot green"></div>
-      <span>AES-256-GCM Active</span>
+      <span>AES-256 Encryption Active</span>
     </div>
     <div class="status-divider"></div>
     <div class="status-item">
       <div class="status-dot green"></div>
-      <span>RSA-4096 Key Pair Loaded</span>
+      <span>Client-Side Processing</span>
     </div>
     <div class="status-divider"></div>
     <div class="status-item">
       <div class="status-dot green"></div>
       <span>Zero-Knowledge Mode: ON</span>
     </div>
-    <div class="status-divider"></div>
-    <div class="status-item">
-      <div class="status-dot green"></div>
-      <span>TLS 1.3 Transport Secured</span>
+  </div>
+
+  <!-- ── Account Security Profile ───────────────────────────── -->
+  <div class="card" style="margin-bottom: 30px; display: flex; align-items: center; gap: 20px; padding: 25px 30px;">
+    <div id="profileAvatar" style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);">U</div>
+    <div>
+      <div style="font-size: 13px; color: var(--cyan); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 5px;">Authenticated User</div>
+      <div id="profileName" style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 4px;">User</div>
+      <div id="profileEmail" style="font-size: 15px; color: var(--muted);">—</div>
     </div>
   </div>
 
-  <!-- ── Security Stats Grid ──────────────────────────────── -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon">🔑</div>
-      <div class="stat-value">RSA-4096</div>
-      <div class="stat-label">Asymmetric Algorithm</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">🔒</div>
-      <div class="stat-value">AES-256</div>
-      <div class="stat-label">Symmetric Algorithm</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">🧬</div>
-      <div class="stat-value">GCM</div>
-      <div class="stat-label">Authenticated Mode</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">🛡️</div>
-      <div class="stat-value">OAEP</div>
-      <div class="stat-label">Key Wrapping Padding</div>
-    </div>
-  </div>
-
-  <!-- ── RSA Public Key Card ──────────────────────────────── -->
-  <div class="card" id="publicKeyCard">
+  <!-- ── Educational Cards ────────────────────────────────── -->
+  <div class="card">
     <div class="card-header">
       <div class="card-title">
-        <span class="card-icon">🔑</span>
+        <span class="card-icon">🔒</span>
         <div>
-          <div class="card-heading">Your RSA-4096 Public Key</div>
-          <div class="card-sub">This key is used to encrypt your AES session keys. It is safe to share.</div>
+          <div class="card-heading">How Your Files Are Protected</div>
+          <div class="card-sub">Understanding our military-grade security model.</div>
         </div>
       </div>
-      <div class="key-actions">
-        <button class="btn btn-ghost btn-sm" id="copyKeyBtn" onclick="copyPublicKey()">📋 Copy</button>
-        <button class="btn btn-ghost btn-sm" id="downloadKeyBtn" onclick="downloadPublicKey()">⬇️ Download</button>
-      </div>
     </div>
-
-    <div class="key-status-row">
-      <span class="key-badge">✅ Valid Key</span>
-      <span class="key-meta" id="keyGenDate">Generated: —</span>
-      <span class="key-meta">Algorithm: RSA-OAEP / SHA-256</span>
-      <span class="key-meta">Length: 4096-bit</span>
-    </div>
-
-    <div class="key-display-box">
-      <pre id="pubKeyDisplay" class="key-pem">Loading your RSA Public Key...</pre>
+    <div class="card-body" style="padding: 20px 30px; color: var(--muted); line-height: 1.8;">
+      <p style="margin-bottom: 15px;">When you upload a file to Famous Storage, your browser instantly generates a unique <strong>256-bit AES encryption key</strong>. Your file is then locked (encrypted) using this key <em>before</em> it ever leaves your device.</p>
+      <p style="margin-bottom: 15px;">We only store the locked, scrambled version of your file on our servers. The unique key used to lock it is downloaded straight to your computer as a <code>.txt</code> file.</p>
+      <p>Because we never receive your key, <strong>it is mathematically impossible for anyone at Famous Storage (or any hackers who breach our servers) to view your files.</strong></p>
     </div>
   </div>
 
-  <!-- ── Regenerate Keys Card ─────────────────────────────── -->
-  <div class="card danger-card">
+  <div class="card danger-card" style="margin-top: 30px; border-color: rgba(255, 68, 68, 0.3);">
     <div class="card-header">
       <div class="card-title">
         <span class="card-icon">⚠️</span>
         <div>
-          <div class="card-heading">Regenerate Cryptographic Keys</div>
-          <div class="card-sub">Generates a brand-new RSA-4096 key pair. Your old private key will no longer decrypt existing files.</div>
+          <div class="card-heading" style="color: #ff4444;">What You MUST Keep Secret</div>
+          <div class="card-sub">Crucial instructions for maintaining your privacy.</div>
         </div>
       </div>
     </div>
-    <div class="danger-body">
-      <div class="warning-box">
-        <strong>⚠️ Destructive Action:</strong> If you regenerate keys, all previously uploaded files encrypted with your old public key <em>cannot be decrypted</em> without your original private key (.pem file). Only proceed if you have a backup of your old private key or you want to start fresh.
-      </div>
-      <button class="btn btn-danger-solid" id="regenBtn" onclick="openRegenModal()">🔁 Regenerate RSA Key Pair</button>
-    </div>
-  </div>
-
-  <!-- ── Zero-Knowledge Architecture ─────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <span class="card-icon">🏛️</span>
-        <div>
-          <div class="card-heading">Zero-Knowledge Architecture Explained</div>
-          <div class="card-sub">How ZINO guarantees that your data is mathematically private.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="architecture-flow">
-
-      <div class="arch-step">
-        <div class="arch-step-num">A</div>
-        <div class="arch-step-body">
-          <div class="arch-step-title">AES-256-GCM Key Generation</div>
-          <div class="arch-step-desc">When you upload a file, your browser dynamically generates a unique 256-bit AES key using the <code>crypto.subtle.generateKey()</code> Web Crypto API. This key <em>never leaves your browser</em> in plain form.</div>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-
-      <div class="arch-step">
-        <div class="arch-step-num">B</div>
-        <div class="arch-step-body">
-          <div class="arch-step-title">File Encryption (AES-GCM)</div>
-          <div class="arch-step-desc">Your file is encrypted entirely in-browser into an unreadable cipher-blob using a random 96-bit Initialization Vector (IV). The IV ensures that even identical files produce completely different ciphertexts.</div>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-
-      <div class="arch-step">
-        <div class="arch-step-num">C</div>
-        <div class="arch-step-body">
-          <div class="arch-step-title">RSA-4096 OAEP Key Wrapping</div>
-          <div class="arch-step-desc">The AES session key is "wrapped" (encrypted) using your RSA-4096 Public Key via the OAEP padding scheme. This means only your corresponding RSA Private Key (.pem file) can ever unwrap it.</div>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-
-      <div class="arch-step">
-        <div class="arch-step-num">D</div>
-        <div class="arch-step-body">
-          <div class="arch-step-title">Secure Upload to Supabase</div>
-          <div class="arch-step-desc">Only three things are stored on the ZINO server: the encrypted cipher-blob, the RSA-wrapped AES key, and the IV. The server sees <strong>zero plain-text data</strong> — even a compromised database reveals nothing without your private key.</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Key Terminology -->
-    <div class="terminology-grid">
-      <div class="term-card">
-        <div class="term-name">Zero-Knowledge</div>
-        <div class="term-def">The server knows absolutely nothing about your plain-text data or private keys.</div>
-      </div>
-      <div class="term-card">
-        <div class="term-name">AES-GCM</div>
-        <div class="term-def">Advanced Encryption Standard in Galois/Counter Mode — provides both confidentiality and data authenticity.</div>
-      </div>
-      <div class="term-card">
-        <div class="term-name">RSA-OAEP</div>
-        <div class="term-def">Optimal Asymmetric Encryption Padding — prevents deterministic chosen-plaintext attacks.</div>
-      </div>
-      <div class="term-card">
-        <div class="term-name">Web Crypto API</div>
-        <div class="term-def">Native browser API ensuring cryptographic operations happen in non-extractable secure memory — no JavaScript extension can steal your keys.</div>
+    <div class="danger-body" style="padding: 0 30px 30px 30px;">
+      <div class="warning-box" style="background: rgba(255, 68, 68, 0.05); border: 1px solid rgba(255, 68, 68, 0.2); border-radius: 12px; padding: 20px; color: #fff; line-height: 1.6;">
+        <ul style="margin-left: 20px; list-style-type: square;">
+          <li style="margin-bottom: 10px;"><strong>The Downloaded Key Files:</strong> Every time you upload or share a file, you receive an AES decryption key. <strong>Do NOT share this key publicly</strong> unless you want the world to be able to decrypt and view that specific file.</li>
+          <li style="margin-bottom: 10px;"><strong>If you lose a key:</strong> Because we do not store your keys, if you lose the key file for an encrypted document, that document is lost forever. We cannot recover it for you.</li>
+          <li><strong>Sharing Links:</strong> Only send your files and decryption keys to trusted individuals via secure, private channels.</li>
+        </ul>
       </div>
     </div>
   </div>
 
 </main>
 
-<!-- ════════════════════════════════════════════════════════════
-     REGEN CONFIRM MODAL
-     ════════════════════════════════════════════════════════════ -->
-<div class="modal-backdrop" id="regenBackdrop">
-  <div class="regen-modal">
-    <div class="regen-icon">⚠️</div>
-    <h2>Regenerate RSA Key Pair?</h2>
-    <p>This will generate a new RSA-4096 private + public key pair. Your <strong>old private key</strong> will no longer decrypt any files uploaded before this action.</p>
-    <div class="regen-steps" id="regenSteps">
-      <div class="regen-step" id="rStep1"><span class="regen-dot"></span> Generate RSA-4096 key pair (Web Crypto API)</div>
-      <div class="regen-step" id="rStep2"><span class="regen-dot"></span> Export new Public Key (PEM format)</div>
-      <div class="regen-step" id="rStep3"><span class="regen-dot"></span> Download new Private Key (.pem) to your device</div>
-      <div class="regen-step" id="rStep4"><span class="regen-dot"></span> Update Public Key in session storage</div>
-    </div>
-    <div class="regen-actions">
-      <button class="btn btn-ghost" id="cancelRegen" onclick="closeRegenModal()">Cancel</button>
-      <button class="btn btn-danger-solid" id="confirmRegen" onclick="runRegen()">🔁 Yes, Regenerate</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ TOAST ════════════════════════════════════════════════ -->
-<div id="toast"></div>
-
 <script src="security.js"></script>
 </body>
 </html>
+
